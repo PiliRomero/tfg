@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 #import numpy as np
 #import matplotlib.pyplot as plt
-from funciones.fun import *
+from PaginaWeb.funciones.fun import *
 
 st.title("Transformada de Fourier")
 

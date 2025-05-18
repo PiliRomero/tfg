@@ -3,7 +3,7 @@ import pandas as np
 import math
 from sklearn.cluster import KMeans
 from sklearn.metrics import davies_bouldin_score
-from funciones.fun import *
+from PaginaWeb.funciones.fun import *
 
 st.title("k-medias")
 

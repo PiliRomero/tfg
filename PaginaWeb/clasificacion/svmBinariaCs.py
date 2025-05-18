@@ -5,7 +5,7 @@ import pywt
 import math
 from sklearn.model_selection import train_test_split
 from sklearn.svm import LinearSVC
-from funciones.fun import *
+from PaginaWeb.funciones.fun import *
 
 
 
@@ -27,7 +27,7 @@ Por ejemplo, en la siguiente figura existe dos ejemplos que no son linealmente s
 """
 st.write(texto1)
 
-st.image("./imagenes/hiperplano2.jpg")
+st.image("./PaginaWeb/imagenes/hiperplano2.jpg")
 
 texto2=r"""
 

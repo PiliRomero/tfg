@@ -19,7 +19,7 @@ from sklearn.metrics import accuracy_score
 from scipy.interpolate import CubicSpline
 import plotly.express as px
 
-datosTF=pd.read_csv("./datos/sMuestreadasN.csv")
+datosTF=pd.read_csv("./PaginaWeb/datos/sMuestreadasN.csv")
 
 nombreSeriesTF=list(datosTF.columns)[1:]
 tiposSeriesTF=np.unique(list(map(lambda x: x[0:x.find('_')],nombreSeriesTF)))

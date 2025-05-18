@@ -2,7 +2,7 @@ import pandas as np
 import pywt
 import math
 from sklearn.cluster import KMeans
-from funciones.fun import *
+from PaginaWeb.funciones.fun import *
 
 st.title("Número de clústeres")
 

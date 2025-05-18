@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 import matplotlib as mpl
 import plotly.express as px
-from funciones.fun import *
+from PaginaWeb.funciones.fun import *
 
 st.title("SVM para clasificación multinomial")
 

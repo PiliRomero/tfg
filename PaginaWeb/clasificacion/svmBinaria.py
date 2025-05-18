@@ -50,7 +50,7 @@ $$
 $$
 """
 st.write(texto1)
-st.image("./imagenes/hiperplano1.jpg")
+st.image("./PaginaWeb/imagenes/hiperplano1.jpg")
 
 texto2=r"""Entonces, teniendo en cuenta la ecuación de la distancia de $\pi$ a $x_{i}$, maximizar el margen del hiperplano de separación 
 equivale a minimizar $\left\| \omega \right\|$ (o equivalentemente $\frac{1}{2}\left\| \omega \right\|^2 = \frac{1}{2}<\omega,\omega>$). 

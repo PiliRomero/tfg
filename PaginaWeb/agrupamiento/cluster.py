@@ -4,7 +4,7 @@ import math
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.metrics import davies_bouldin_score
 from sklearn.preprocessing import scale
-from funciones.fun import *
+from PaginaWeb.funciones.fun import *
 
 st.title("Agrupamiento jerárquico")
 

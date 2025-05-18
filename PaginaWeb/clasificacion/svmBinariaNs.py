@@ -4,7 +4,7 @@ import pywt
 import math
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
-from funciones.fun import *
+from PaginaWeb.funciones.fun import *
 
 st.title("SVM para clasificación binaria")
 

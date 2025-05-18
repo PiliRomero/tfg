@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pywt
 import math
-from funciones.fun import *
+from PaginaWeb.funciones.fun import *
 
 st.title("Wavelets")
 
