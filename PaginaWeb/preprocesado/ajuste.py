@@ -86,7 +86,7 @@ with col1:
     serie.index=datos['t']
 
 with col2:
-    st.pyplot(dibujarSerie(serie))
+    dibujarSerie(serie)
 
 col1, col2 = st.columns(2)
 with col1:
@@ -106,4 +106,4 @@ with col2:
         index=0
     )
 
-st.pyplot(dibujarECM(serie,optionW,nSelec))
+dibujarECM(serie,optionW,nSelec)

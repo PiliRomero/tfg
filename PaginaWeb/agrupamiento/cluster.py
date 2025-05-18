@@ -168,7 +168,7 @@ st.write(texto4)
 
 alturaSelect=st.slider("Altura de corte del dendrograma: ", min_value=0.0,max_value=max(cluster_dist.distances_) ,value=max(cluster_dist.distances_)/2)
 
-st.pyplot(dibujarDendograma(cluster_dist,alturaSelect,medida,enlace))
+dibujarDendograma(cluster_dist,alturaSelect,medida,enlace)
 
 st.subheader("Métrica de evaluación", divider="red")
 

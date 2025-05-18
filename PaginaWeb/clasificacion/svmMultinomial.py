@@ -10,7 +10,7 @@ from PaginaWeb.funciones.fun import *
 
 st.title("SVM para clasificación multinomial")
 
-texto1="""
+texto1=r"""
 Las SVM se pueden generalizar para la clasificación en más de dos categorías. Se distinguen dos enfoques:
 - Métodos indirectos: se basan en descomponer el problema de clasificación múltiple en problemas de clasificación binaria y aplicar a estos problemas los algoritmos de SVM vistos en el apartado anterior.
     - **Uno frente a uno**: se parte de un problema de clasificación en K clases. Dada una clase se construyen k-1 SVMs para comparar esta clase con cada una de las clases restantes  . Es decir, en total se construyen k(k-1)/2 hiperplanos de clasificación. Dada una instancia para clasificarla en una de las k posibles clases se emplean los k(k-1)/2 clasificadores generados y se anota las veces que la instancia se asigna a cada una de las clases. Finalmente, la clase ganadora será la que registre un mayor número de asignaciones.
@@ -199,7 +199,7 @@ with col1:
 
 with col2:
     with st.expander("Ver distribución:" + cadena):
-        st.pyplot(dibujarDist(y,clases))
+        dibujarDist(y,clases)
 
 if "aleatorio" not in st.session_state:
     st.session_state.aleatorio = np.random.randint(9999)
@@ -220,13 +220,13 @@ with col1:
     for c in clases:
         st.write("Clase "+c+": "+ str(len([x for x in yEntrenamiento if x==clases.index(c)])) + " señales, etiqueta: " + str(clases.index(c)))
     with st.expander("Ver distribución:" + cadena):
-        st.pyplot(dibujarDist(yEntrenamiento,clases))
+        dibujarDist(yEntrenamiento,clases)
 with col2:
     st.write("**Núm. de señales de cada clase para el test**")
     for c in clases:
         st.write("Clase "+c+": "+ str(len([x for x in yTest if x==clases.index(c)])) + " señales, etiqueta: " + str(clases.index(c)))
     with st.expander("Ver distribución:" + cadena):
-        st.pyplot(dibujarDist(yTest,clases))
+        dibujarDist(yTest,clases)
 
 st.write("Si considera que el reparto de ejemplos de entrenamiento y test no está equilibrado puede volver a realizar un reparto aleatorio pinchando en el botón de Volver a barajar")
 
@@ -255,7 +255,7 @@ else:
 
 modelo.fit(xEntrenamiento.values, yEntrenamiento.ravel())
 #modelo.fit(xEntrenamiento.values, yEntrenamiento.ravel())
-st.pyplot(dibujarHiperplanoMulti(modelo,c,xEntrenamiento,yEntrenamiento,optionK))
+dibujarHiperplanoMulti(modelo,c,xEntrenamiento,yEntrenamiento,optionK)
 
 st.subheader("Métricas de evaluación", divider="red")
 matrizConfusion3(modelo,clases,xTest,yTest)

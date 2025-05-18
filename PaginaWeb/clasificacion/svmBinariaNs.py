@@ -272,7 +272,7 @@ with col1:
 
 with col2:
     with st.expander("Ver distribución:" + cadena):
-        st.pyplot(dibujarDist(y,clases))
+        dibujarDist(y,clases)
 
 
 
@@ -295,13 +295,13 @@ with col1:
     for c in clases:
         st.write("Clase "+c+": "+ str(len([x for x in yEntrenamiento if x==clases.index(c)])) + " señales, etiqueta: " + str(clases.index(c)))
     with st.expander("Ver distribución:" + cadena):
-        st.pyplot(dibujarDist(yEntrenamiento,clases))
+        dibujarDist(yEntrenamiento,clases)
 with col2:
     st.write("**Núm. de señales de cada clase para el test**")
     for c in clases:
         st.write("Clase "+c+": "+ str(len([x for x in yTest if x==clases.index(c)])) + " señales, etiqueta: " + str(clases.index(c)))
     with st.expander("Ver distribución:" + cadena):
-        st.pyplot(dibujarDist(yTest,clases))
+        dibujarDist(yTest,clases)
 
 st.write("Si considera que el reparto de ejemplos de entrenamiento y test no está equilibrado puede volver a realizar un reparto aleatorio pinchando en el botón de Volver a barajar")
 
@@ -334,7 +334,7 @@ modelo.fit(xEntrenamiento.values, yEntrenamiento.ravel())
 
 
 #modelo.fit(xEntrenamiento.values, yEntrenamiento.ravel())
-st.pyplot(dibujarHiperplanoNL(modelo,c,xEntrenamiento,yEntrenamiento,optionK,vS))
+dibujarHiperplanoNL(modelo,c,xEntrenamiento,yEntrenamiento,optionK,vS)
 
 st.subheader("Métricas de evaluación", divider="red")
 matrizConfusion3(modelo,clases,xTest,yTest)

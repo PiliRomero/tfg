@@ -135,7 +135,10 @@ def dibujarSerie(serie,ventana=False):
     else:
         ax1.set_ylabel('Señal')
         ax1.set_title('Evolución de la señal '+ serie.name)
-    return fig1
+    st.pyplot(fig1)
+    plt.cla()
+    plt.close(fig1)
+    
 
 
 #################################
@@ -180,8 +183,10 @@ def dibujarTransformada(serie,ventana=False):
     f2.set_xlabel('Frecuencia (Hz)')
     f2.set_ylabel('Parte imaginaria')
     f2.set_title('Parte imaginaria de la FFT: '+serie.name)
-    plt.tight_layout()
-    return fig1
+    st.pyplot(fig1)
+    plt.cla()
+    plt.close(fig1)
+
 
 # Dibujar transformada modulo fase
 def dibujarTransformadaMF(serie,ventana=False):
@@ -207,7 +212,9 @@ def dibujarTransformadaMF(serie,ventana=False):
     f2.set_xlabel('Frecuencia (Hz)')
     f2.set_ylabel('Fase')
     f2.set_title('Fase de la FFT: '+serie.name)
-    return fig1
+    st.pyplot(fig1)
+    plt.cla()
+    plt.close(fig1)
 
 def dibujarSerieInv(serie, modulo=None, numero=None, ventana=False):
     if ventana==True:
@@ -248,11 +255,13 @@ def dibujarSerieInv(serie, modulo=None, numero=None, ventana=False):
     ax2.set_xlabel('Tiempo')
     ax2.set_ylabel('Serie reconstruida')
     ax2.set_title('FFT inversa ' + serie.name)
-    return fig1
+    st.pyplot(fig1)
+    plt.cla()
+    plt.close(fig1)
 
 #########################
 # Wavelets
-##########################
+##########################S
 
 def digujarCoeficientes(serie,w):
     cA,cD = pywt.dwt(serie.values,w)
@@ -268,7 +277,9 @@ def digujarCoeficientes(serie,w):
     f2.vlines(m,0,cD)
     f2.set_ylabel('$d$')
     f2.set_title('Coeficientes de detalle: '+ serie.name)
-    return fig1
+    st.pyplot(fig1)
+    plt.cla()
+    plt.close(fig1)
 
 def dibujarCAeInv(serie,w,m):
     coeficientes = pywt.wavedec(serie.values,w, level=m)
@@ -290,14 +301,19 @@ def dibujarCAeInv(serie,w,m):
     f2.set_xlabel('Tiempo')
     f2.set_ylabel('IDWT')
     f2.set_title('IDWT: '+serie.name)
-    return len(coeficientes[0]),fig1
+    st.pyplot(fig1)
+    plt.cla()
+    plt.close(fig1)
+    return len(coeficientes[0])
 
 def dibujarWaveletDiscreta(w):
     [y,x]=pywt.DiscreteContinuousWavelet(w).wavefun()[1:]
     fig1,ax1=plt.subplots()
     ax1.plot(x,y)
     ax1.set_title(w)
-    return fig1
+    st.pyplot(fig1)
+    plt.cla()
+    plt.close(fig1)
 
 def dibujarWaveletContinua(w):
     if w in ['cmor','shan']:
@@ -309,15 +325,17 @@ def dibujarWaveletContinua(w):
     ax1.plot(x,np.real(psi),label="real")
     ax1.plot(x,np.imag(psi),label="imag")
     ax1.set_title(w)
-    return fig1
+    st.pyplot(fig1)
+    plt.cla()
+    plt.close(fig1)
 
 def dibujarWavelet(w):
     wavelistD=pywt.wavelist(kind="continuous")
     wavelistC=pywt.wavelist(kind="discrete")
     if w in wavelistD:
-        return dibujarWaveletContinua(w)
+        dibujarWaveletContinua(w)
     else:
-        return dibujarWaveletDiscreta(w)
+        dibujarWaveletDiscreta(w)
     
 
 #############################
@@ -388,7 +406,9 @@ def dibujarECM(serie,w,nmax):
     f4.set_ylabel('EAM')
     f4.set_title('EAM: '+ serie.name)
 
-    return fig1
+    st.pyplot(fig1)
+    plt.cla()
+    plt.close(fig1)
 
 
 ##################################
@@ -484,7 +504,9 @@ def dibujarDendograma(modelo,alturaCorte,medida,enlace):
     ax.set_title("Distancia "+str(medida) +" Linkage "+str(enlace))
     ax.axhline(y=alturaCorte, c = 'black', linestyle='--', label='altura corte')
     ax.legend()
-    return fig
+    st.pyplot(fig)
+    plt.cla()
+    plt.close(fig)
 
 
 def dibujarClusters(nCluster,datos,clases):
@@ -497,20 +519,25 @@ def dibujarClusters(nCluster,datos,clases):
                 ax1.plot(datos.to_numpy()[clases==i,:][k,:])
             ax1.set_title('clase '+ str(i))
             st.pyplot(fig1)
+            plt.cla()
+            plt.close(fig1)
     with col2:
         for i in range(1,nCluster,2):
             fig1, ax1 = plt.subplots()
             for k in range(len(datos.to_numpy()[clases==i,:])):
                 ax1.plot(datos.to_numpy()[clases==i,:][k,:])
             ax1.set_title('clase '+ str(i))
-            st.pyplot(fig1)       
+            st.pyplot(fig1) 
+            plt.cla()
+            plt.close(fig1)      
 
 def componentesPrincipales(datos):
     pca=PCA() 
     datosPCA=pca.fit_transform(datos)
     per_var=np.round(pca.explained_variance_ratio_*100,decimals=1)
     varianzaE=np.round((pca.explained_variance_ratio_[0]+pca.explained_variance_ratio_[1])*100,1)
-    st.write("El porcentaje de variabilidad explicada por las 2 primeras componentes principales es: "+ str(varianzaE)+"\%")
+    st.write("El porcentaje de variabilidad explicada por las 2 primeras componentes principales es: ")
+    st.write(f'{varianzaE/100:.2%}')
     labels = [str(x) for x in range(1,len(per_var)+1)]
     fig1, ax1 = plt.subplots()
     ax1.bar(x=range(1,len(per_var)+1),height=per_var)
@@ -518,6 +545,8 @@ def componentesPrincipales(datos):
     ax1.set_ylabel("Porcentaje de varianza explicada")
     ax1.set_xlabel('Componente principal')
     st.pyplot(fig1)
+    plt.cla()
+    plt.close(fig1)
 
 def componentesPrincipales2(datos):
     pca=PCA() 
@@ -542,6 +571,8 @@ def dibujarCluster2d(datos,clases,nCluster):
     ax.set_ylabel('2ª componente principal')
     ax.legend()
     st.pyplot(fig)
+    plt.cla()
+    plt.close(fig)
 
 
 def metodoCodo(datos):
@@ -555,7 +586,9 @@ def metodoCodo(datos):
     ax.set_title("Método del codo")
     ax.set_xlabel('Número de clústeres')
     ax.set_ylabel('Suma de distancias al cuadrado')
-    return fig
+    st.pyplot(fig)
+    plt.cla()
+    plt.close(fig)
 
 def optimoSilhouette(datos):
     coef=[]
@@ -591,7 +624,9 @@ def dibujarDist(y,clases):
     for c in clases:
         valores.append(len([i for i in y if i==clases.index(c)]))
     ax.pie(valores,labels=clases,colors=colores)
-    return fig
+    st.pyplot(fig)
+    plt.cla()
+    plt.close(fig)
 
 def dibujarHiperplano(modelo,xE,yE,vS=False):
     xx = np.linspace(np.min(xE.iloc[:,0]), np.max(xE.iloc[:,0]), 50)
@@ -621,7 +656,9 @@ def dibujarHiperplano(modelo,xE,yE,vS=False):
         linestyles = ['--', '-', '--']
     )
     ax.set_title("Resultados clasificación SVM lineal")
-    return fig
+    st.pyplot(fig)
+    plt.cla()
+    plt.close(fig)
 
 def matrizConfusion3(modelo,clases,xT,yT):
     predicciones=modelo.predict(xT.values)
@@ -648,7 +685,9 @@ def dibujarHiperplanoNL(modelo,clases,xE,yE,ker,vS=False):
     ax.set_title('Kernel '+ ker)
     if vS:
         ax.scatter(modelo.support_vectors_[:, 0],modelo.support_vectors_[:, 1],s=200, linewidth=1,facecolors='none', edgecolors='black')
-    return fig
+    st.pyplot(fig)
+    plt.cla()
+    plt.close(fig)
 
 def dibujarHiperplanoMulti(modelo,clases,xE,yE,ker):
     xx = np.linspace(np.min(xE.iloc[:,0]), np.max(xE.iloc[:,0]), 50)
@@ -661,4 +700,6 @@ def dibujarHiperplanoMulti(modelo,clases,xE,yE,ker):
     ax.scatter(grid[:,0], grid[:,1], c=pred_grid, cmap=mpl.colormaps['plasma'],alpha=0.1)
     ax.scatter(xE.iloc[:,0], xE.iloc[:,1], c=yE,cmap=mpl.colormaps['plasma'])
     ax.set_title('Kernel '+ ker)
-    return fig
+    st.pyplot(fig)
+    plt.cla()
+    plt.close(fig)

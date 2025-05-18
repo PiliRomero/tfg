@@ -142,7 +142,7 @@ A continuación se prueba a obtener el número "óptimo" de clústeres para el a
 """
 st.write(texto4)
 st.subheader("Método del codo", divider="red")
-st.pyplot(metodoCodo(datosP))
+metodoCodo(datosP)
 st.subheader("Método Silhouette", divider="red")
 k=optimoSilhouette(datosP)
 st.write("Número óptimo de clústeres: " + str(k))

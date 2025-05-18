@@ -134,7 +134,8 @@ with col1:
     serie.index=datos['t']
 
 with col2:
-    st.pyplot(dibujarSerie(serie))
+
+    dibujarSerie(serie)
 
 st.subheader("Representación de los coeficientes de la FFT", divider="red")
 
@@ -143,13 +144,13 @@ Debe tenerse en cuenta que los valores de la transformada discreta de Fourier so
 """
 st.markdown(texto4)
 
-st.pyplot(dibujarTransformada(serie))
+dibujarTransformada(serie)
 
 texto5=r"""
 Otra alternativa es representar el módulo y la fase de las componentes de la transformada discreta de Fourier. Basta recorda que, dado un número complejo $a + bi$, el módulo viene dado por $\sqrt{a^{2}+b^{2}}$ y la fase $arco tangente (\frac{b}{a})$
 """
 st.write(texto5)
-st.pyplot(dibujarTransformadaMF(serie))
+dibujarTransformadaMF(serie)
 
 st.subheader("Suavizado de señales", divider="red")
 
@@ -163,7 +164,7 @@ st.write(texto6)
 
 moduloSelec = st.slider("Seleccione el módulo: ", min_value=0.0,max_value=moduloMaximo(serie) ,value=percentil(serie))
 
-st.pyplot(dibujarSerieInv(serie, modulo=moduloSelec))
+dibujarSerieInv(serie, modulo=moduloSelec)
 
 
 texto7="""
@@ -171,10 +172,10 @@ A continuación se puede seleccionar el número elementos no nulos de la transfo
 """
 st.markdown(texto7)
 numeroSelec = st.slider("Número: ", min_value=1,max_value=len(serie.index) ,value=max(int(len(serie.index)*0.01),2))
-st.pyplot(dibujarSerieInv(serie,numero=numeroSelec))
+dibujarSerieInv(serie,numero=numeroSelec)
 
 st.subheader("Funciones ventana", divider="red")
-texto8="""
+texto8=r"""
 En los ejemplos anteriores se ha utilizado el algoritmo FFT.
 Al aplicar directamente la transformada discreta de Fourier no se ha tenido en cuenta la hipótesis de que $x(n)=0
 \; ∀ \;n<0,\; n>N$. .
@@ -185,9 +186,9 @@ st.markdown(texto8)
 col12, col22 = st.columns(2)
 
 with col12:
-    st.pyplot(dibujarSerie(serie,ventana=True))
+    dibujarSerie(serie,ventana=True)
 
-st.pyplot(dibujarTransformada(serie,ventana=True))
+dibujarTransformada(serie,ventana=True)
 
 
 texto9="""
@@ -197,4 +198,4 @@ st.markdown(texto9)
 
 moduloSelec2 = st.slider("Seleccione el módulo: ", min_value=0.0,max_value=moduloMaximo(serie,ventana=True) ,value=percentil(serie,ventana=True))
 
-st.pyplot(dibujarSerieInv(serie,modulo=moduloSelec2,ventana=True))
+dibujarSerieInv(serie,modulo=moduloSelec2,ventana=True)

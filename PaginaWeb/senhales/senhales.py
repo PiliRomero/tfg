@@ -140,6 +140,8 @@ with col2:
     ax1.set_ylabel('Señal')
     ax1.set_title('Señal original '+ optionS)
     st.pyplot(fig1)
+    plt.cla()
+    plt.close(fig1)
 
 #with col2:
 #    fig1, ax1 = plt.subplots()
