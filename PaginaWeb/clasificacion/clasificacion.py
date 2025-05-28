@@ -11,6 +11,8 @@ Para evaluar el rendimiento del modelo de la clasificación se divide el conjunt
 Para los ejemplos mostrados se calcula la acuracidad y la matriz de confusión.
 
 * La **acuracidad** es el porcentaje de ejemplos clasificados correctamente.
-* La **matriz de confusión** compara la clase en la que el modelo clasifica la señal, con la clase real a la que pertenece. Para clasificación binaria se tendrá una matriz de dimensión $2 \\times 2$.
+* La **matriz de confusión**  resume los datos reservados para el test según su etiqueta real y la  clase a la que fueron asignadas según el modelo.. Para clasificación binaria se tendrá una matriz de dimensión $2 \\times 2$.
+
+La acuracidad puede no ser adecuada cuando se trabaja con datos desequilibrados. Por ejemplo, en clasificación binaria, si en el conjunto de señales de una de las clases es mucho más numerosa que la otra, puede ocurrir que el modelo utilizado prediga mucho mejor la clase mayoritaria. El modelo podría llegar a predecir todos los datos del test como pertenecientes a la clase mayoritaria y la acuracidad seguir mostrando un valor muy elevado. 
 """
 st.markdown(texto1)

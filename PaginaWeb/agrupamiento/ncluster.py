@@ -7,8 +7,9 @@ from PaginaWeb.funciones.fun import *
 st.title("Número de clústeres")
 
 texto1="""
-Establecer el número de clústeres o clases se puede realizar utilizando varias técnicas, por ejemplo inspeccionando directamente el dendrograma y fijando una altura de corte para generar los clústeres.
+En esta página se analizan dos métodos que permiten determinar cuál es el número óptimo de clústeres en una agrupamiento:
 """
+st.markdown(texto1)
 st.header("El método del codo")
 texto2="""
 El **método del codo** consiste en aplicar el método de agrupamiento para diferentes números de clústeres (k) y calcular la suma de las distancias al cuadrado de cada instancia al centroide del clúster. Al aumentar el número de clústeres la suma de distancias disminuye, pero a partir de un determinado valor de k, esta disminución es despreciable. Se dibuja una gráfica en donde se representa en el eje de abscisas el número de clústeres k y en el de ordenadas la suma de las distancias al cuadrado. El k óptimo se corresponde con el valor de la abscisa para el cual la disminución de la suma de distancias deja de ser significativa.
@@ -55,7 +56,7 @@ else:
         tiposSeries=np.unique(list(map(lambda x: x[0:x.find('_')] if '_' in x else x,nombreSeries)))
 
     else:
-        st.page_link("./senhales/senhales.py", label="Debe subir un archivo válido al final de la página de señales digitales")
+        st.page_link("./PaginaWeb/senhales/senhales.py", label="PULSE en el enlace para subir un archivo válido al final de la página de señales digitales")
         datos=getDatosTF()
         nombreSeries=getNombreSeriesTF()
         tiposSeries=getTipoSeriesTF()  

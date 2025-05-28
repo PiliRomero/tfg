@@ -37,7 +37,7 @@ donde:
 *   Ω: frecuencia en $rad/s$
 *   θ: fase en radianes
 
-Si se considera la frecuencia (f) en ciclos por segundo ($Hz$) entonces la frecuencia $\Omega$ se puede escribir como $Ω=2 \pi f$) por lo que $x_{a}(t) = Acos(2\pi ft+θ)$. 
+Si se considera la frecuencia (f) en ciclos por segundo ($Hz$) entonces la frecuencia $\Omega$ se puede escribir como $Ω=2 \pi f$, por lo que $x_{a}(t) = Acos(2\pi ft+θ)$. 
 
 Utilizando la fórmula de Euler que establece la relación entre funciones trigonométricas y la exponencial compleja ($e^{ix}=cos(x) + i \;sen(x)$)
 
@@ -66,23 +66,23 @@ st.markdown(texto1)
 st.header("Conversión de señales analógicas a digitales")
 
 texto2="""
-
+Muchas señales presentes en la naturaleza o en los dispositivos tecnológicos son analógicas. En este apartado se describe el proceso de conversión de señales analógicas as señales digitales con el fin de facilitar su procesamiento.
 1.   **Muestreo**: se convierte una señal continua en el tiempo ($x_{a}(t)$) en una señal discreta en el tiempo ($x(n)$) tomando muestras de la señal continua en unos instantes temporales determinados de modo que $x_{a}(nT)=x(n)$, donde T es el intervalo de muestreo.
 2.   **Cuantificación**: se convierte una señal de valores continuos en una señal de valores discretos en instantes de tiempo discreto, es decir, se convierte en una señal digital. La diferencia entre las dos señales se denomina error de cuantificación. Las amplitudes permitidas en la señal discreta son los niveles de cuantificación y cuantos más niveles se usen mayor será la precisión y menor el error de cuantificación.
 3.   **Codificación**: se representa cada valor de la señal digital por un código binario.
 
-En los siguientes apartados se introducen las transformadas de Fourier y wavelet. La
+En el bloque dedicado a preprocesado de señales se introducen las transformadas de Fourier y Wavelet. La
 transformada de Fourier muestra la relación entre la amplitud y la frecuencia de una señal, pero no indica en que instante temporal se dan estas componentes
-de frecuencia. Esta información no es relevante para señales estacionarias, aquellas cuya frecuencia no cambia con el tiempo.
+de frecuencia. Esta información no es relevante para señales estacionarias, aquellas cuya frecuencia no cambia con el tiempo, pero existen muchos casos en los que este requisito no se verifica.
 
-La transformada wavelet permite descomponer las señales, sean estacionarias o no, en componentes de tiempo y frecuencia. 
+Como alternativa, se ofrece la posibilidad de aplicar la transformada Wavelet permite descomponer las señales, sean estacionarias o no, en componentes de tiempo y frecuencia. 
 """
 
 st.markdown(texto2)
 st.divider()
 
 texto3=r"""
-En esta página web se proporciona un conjunto de señales para probar las técnicas de preprocesado, agrupamiento y clasificación que se estudian.
+En esta página web se proporciona un conjunto de señales de fusión termonuclear para probar las técnicas de preprocesado, agrupamiento y clasificación que se estudian.
 
 Como parte del tratamiento, se armonizó el eje temporal de las señales objeto de estudio para que los datos de todas ellas coincidan en el tiempo. En primer lugar, como límite inferior se consideró el máximo de todos los instantes iniciales de las señales y como límite superior el mínimo de los instantes finales. 
 
@@ -171,7 +171,7 @@ st.subheader("Subir fichero de datos", divider="red")
 texto4="""
 Para probar los algoritmos propuestos puede subir su propio fichero .csv que debe cumplir las siguientes restricciones:
 * Cada columna se corresponde con una señal.
-* La trimera columna contendrá el tiempo.
+* La primera columna contendrá el tiempo.
 * El nombre de las señales deberan tener el siguiente formato: TIPOSEÑAL_NONBRESEÑAL, es decir, para nombrar una señal en primer lugar
 se pone el nombre de la tipología o clase de cada señal seguido por un guión bajo (_) y por el nombre de la señal. De esta forma es
 posible etiquetar los ejemplos de entrenamiento para los algoritmos de aprendizaje automático supervisado.

@@ -8,12 +8,12 @@ from PaginaWeb.funciones.fun import *
 
 st.title("SVM para clasificación binaria")
 
-st.header("Ejemplos no separables linealmente")
+st.header("Datos no separables linealmente")
 
 texto1=r"""
-Cuando el conjunto de ejemplos no son linealmente separables no se pueden utilizar ninguno de los dos métodos vistos anteriormente. 
-En estos casos se opta por transformar el espacio original de ejemplos (que se denotará por $ \mathbb{X}$) mediante una función 
-no lineal  ($\Phi$) en un espacio transformado de alta dimensionalidad que se denominará \textbf{espacio de características} 
+Cuando el conjunto de datos no son linealmente separables no se pueden utilizar ninguno de los dos métodos vistos anteriormente. 
+En estos casos se opta por transformar el espacio original de datos (que se denotará por $ \mathbb{X}$) mediante una función 
+no lineal  ($\Phi$) en un espacio transformado de alta dimensionalidad que se denominará **espacio de características** 
 ($\mathfrak{F}$). Es decir:
 
 
@@ -21,7 +21,7 @@ $$\Phi: \; \mathbb{X} \to \mathfrak{F}$$
 
 Normalmente, la dimensión del espacio de características será bastante mayor que la dimensión del espacio original.
 
-Una vez que se ha aplicado la función no lineal $\Phi$ a todos los ejemplos de entrenamiento, se construye un hiperplano de 
+Una vez que se ha aplicado la función no lineal $\Phi$ a todos los datos de entrenamiento, se construye un hiperplano de 
 separación lineal en el espacio de características $\mathfrak{F}$:
 
 $$
@@ -35,7 +35,7 @@ $$
 \pi = \left\{ x\; \epsilon\;  \mathbb{R}^{p}  \; | \; \sum_{i=1}^{n} \hat{\alpha_{i}} y_{i} \Phi^{t}(x)\Phi(x_{i}) =0 \right\} = \left\{ x\; \epsilon\;  \mathbb{R}^{p}  \; | \; \sum_{i=1}^{n} \hat{\alpha_{i}} y_{i} <\Phi(x),\Phi(x_{i})> =0 \right\} 
 $$
 
-donde el producto escalar $<\Phi(x),\Phi(x_{i})>$ se obtiene a partir de las \textbf{funciones kernel}:
+donde el producto escalar $<\Phi(x),\Phi(x_{i})>$ se obtiene a partir de las **funciones kernel**:
 
 $$
 K: \; \mathbb{X} \times \mathbb{X}  \to \mathbb{R} \\
@@ -48,7 +48,7 @@ El problema (dual) a resolver será por tanto:
 $$
 \underset{\alpha}{max} \; \sum_{i=1}^{n} \alpha_{i} - \frac{1}{2} \sum_{i,j=1}^{n} \alpha_{i} \alpha_{j} y_{i} y_{j} K(x_{i},x_{j})\\
 s.a.: \sum_{i=1}^{n} \alpha_{i} y_{i} = 0 \\
-0 \leq \alpha_{i} \leq C
+0 \leq \alpha_{i} \leq C, \; i=1, \; \dots, \; n
 $$
 
 
@@ -114,7 +114,7 @@ else:
         tiposSeries=np.unique(list(map(lambda x: x[0:x.find('_')] if '_' in x else x,nombreSeries)))
 
     else:
-        st.page_link("./senhales/senhales.py", label="Debe subir un archivo válido al final de la página de señales digitales")
+        st.page_link("./PaginaWeb/senhales/senhales.py", label="PULSE en el enlace para subir un archivo válido al final de la página de señales digitales")
         datos=getDatosTF()
         nombreSeries=getNombreSeriesTF()
         tiposSeries=getTipoSeriesTF()  
@@ -170,9 +170,9 @@ Debe seleccionar dos tipos de series distintas.
 st.write(texto2)
 st.subheader("Preprocesamiento", divider="red")
 texto7="""
-Se realiza el **preprocesamiento** de las señales mediante transforma wavelet. 
-Se fija un nivel de resolución M común para todas las señales. Cada instancia, o ejemplo 
-de entrenamiento del algoritmo, estará formada por los coeficientes de aproximación para este nivel de resolución. 
+Se realiza el **preprocesamiento** de las señales mediante transforma Wavelet. 
+Se fija un nivel de descomposición M común para todas las señales. Cada instancia, o ejemplo 
+de entrenamiento del algoritmo, estará formada por los coeficientes de aproximación para este nivel de descomposición. 
 """
 st.write(texto7)
 
@@ -191,7 +191,7 @@ with col1:
     )
     normalizar=st.checkbox("Normalizar coeficientes aproximación")
 with col2:
-    mSelect=st.slider("Nivel de resolución: ", min_value=1,max_value=math.trunc(math.log2(len(datosSelect)))-1 ,value=math.trunc(math.log2(len(datosSelect))/2))
+    mSelect=st.slider("Nivel de descomposición: ", min_value=1,max_value=math.trunc(math.log2(len(datosSelect)))-1 ,value=math.trunc(math.log2(len(datosSelect))/2))
 
     seriesP=obtenerSeriesPreprocesadas(datosSelect,seriesSelect,mSelect,optionW)
     datosP=pd.DataFrame(seriesP,index=seriesSelect,columns=["c"+str(indice) for indice in np.arange(len(seriesP[0]))+1])
@@ -221,7 +221,10 @@ Para poder visualizar los vectores soporte y el hiperplano de separación se pue
 Para ello se utiliza el **análisis de componentes principales**."""
 st.write(texto4)
 
-texto5=r"""Se parte de un vector $X = (X_{1}, \dots, X_{p})^{t}$ de p dimensiones y se desea pasar a un vector reducido $Z = (X_{1}, \dots ,Z_{r})^{t}$, con $r<p$, obtenido a partir de $X$ y que contenga la máxima información (dispersión) que posee $X$. 
+texto5=r"""
+La reducción de la dimensionalidad mejora el rendimiento de los algoritmos de aprendizaje automático al transformar el conjunto de datos en otro de menor dimensión, pero que sigue conservando las principales características de los datos originales. El análisis de componentes principales permite identificar patrones en los datos y facilita la visualización de los mismos, puesto que al considerar únicamente las dos primeras componentes, es posible representar las series en el plano euclídeo.
+
+Se parte de un vector $X = (X_{1}, \dots, X_{p})^{t}$ de p dimensiones y se desea pasar a un vector reducido $Z = (X_{1}, \dots ,Z_{r})^{t}$, con $r<p$, obtenido a partir de $X$ y que contenga la máxima información (dispersión) que posee $X$. 
 Se define la **primera componente principal** de $X$ como:
 $$
 Z_{1}=V_{1}^{t}X=V_{11}X_{1}+\dots+V_{p1}X_{p}, \: con \ V_{1}=(V_{11}, \dots, V_{p1})^{t} \:\epsilon \: \mathbb{R}^{p}
@@ -261,7 +264,7 @@ if normalizar:
 with st.expander("Ver primera y segunda componentes principales"+cadena):
     st.write(datosCP)
 
-st.subheader("Ejemplos para el entrenamiento y para el test", divider="red")
+st.subheader("Datos para el entrenamiento y para el test", divider="red")
 
 clases,x,y=etiquetar(datosCP)
 col1, col2 = st.columns(2)
@@ -286,7 +289,7 @@ if st.button("Volver a barajar", type="primary"):
 xEntrenamiento, xTest, yEntrenamiento, yTest = train_test_split(x,y.values.reshape(-1,1),random_state=st.session_state.aleatorio,train_size=0.8,shuffle=True)
 
 texto3="""
-El siguiente paso es dividir el conjunto de señales en ejemplos de entrenamiento y test. Se tomará el 80% de las instancias para el entrenamiento del modelo y el 20% restante para la evaluación del modelo.
+El siguiente paso es dividir el conjunto de señales en datos de entrenamiento y test. Se tomará el 80% de las instancias para el entrenamiento del modelo y el 20% restante para la evaluación del modelo.
 """
 st.write(texto3)
 col1, col2 = st.columns(2)
@@ -303,10 +306,10 @@ with col2:
     with st.expander("Ver distribución:" + cadena):
         dibujarDist(yTest,clases)
 
-st.write("Si considera que el reparto de ejemplos de entrenamiento y test no está equilibrado puede volver a realizar un reparto aleatorio pinchando en el botón de Volver a barajar")
+st.write("Si considera que el reparto de datos de entrenamiento y test no está equilibrado puede volver a realizar un reparto aleatorio pinchando en el botón de Volver a barajar")
 
 st.subheader("Hiperplano de separación", divider="red")
-
+st.write("Seleccione el parámetro de regularización C y la función kernel. En función del kernel elegido deberá fijar un valor para los coeficientes correspondientes.")
 col1, col2, col3 = st.columns(3)
 with col1:
     cSelect=st.slider("C: ", min_value=1,max_value=100 ,value=10)
@@ -337,6 +340,7 @@ modelo.fit(xEntrenamiento.values, yEntrenamiento.ravel())
 dibujarHiperplanoNL(modelo,c,xEntrenamiento,yEntrenamiento,optionK,vS)
 
 st.subheader("Métricas de evaluación", divider="red")
+st.write("Al reservar el 20% de los datos para el test se aplica el hiperplano de separación obtenido mediante SVM a estas instancias y se calcula la acuracidad (proporción de ejemplos clasificados correctamente) y la matriz de dispersión: ")
 matrizConfusion3(modelo,clases,xTest,yTest)
 
 clases2,x2,y2=etiquetar(datosP)

@@ -42,7 +42,7 @@ else:
         tiposSeries=np.unique(list(map(lambda x: x[0:x.find('_')] if '_' in x else x,nombreSeries)))
 
     else:
-        st.page_link("./senhales/senhales.py", label="Debe subir un archivo válido al final de la página de señales digitales")
+        st.page_link("./PaginaWeb/senhales/senhales.py", label="PULSE en el enlace para subir un archivo válido al final de la página de señales digitales")
         datos=getDatosTF()
         nombreSeries=getNombreSeriesTF()
         tiposSeries=getTipoSeriesTF()  
@@ -99,9 +99,9 @@ Debe seleccionar dos tipos de series distintas.
 """
 st.subheader("Preprocesamiento", divider="red")
 texto7="""
-Se realiza el **preprocesamiento** de las señales mediante transforma wavelet. 
-Se fija un nivel de resolución M común para todas las señales. Cada instancia, o ejemplo 
-de entrenamiento del algoritmo, estará formada por los coeficientes de aproximación para este nivel de resolución. 
+Se realiza el **preprocesamiento** de las señales mediante transforma Wavelet. 
+Se fija un nivel de descomposición M común para todas las señales. Cada instancia, o ejemplo 
+de entrenamiento del algoritmo, estará formada por los coeficientes de aproximación para este nivel de descomposición. 
 """
 st.write(texto7)
 
@@ -120,7 +120,7 @@ with col1:
     )
     normalizar=st.checkbox("Normalizar coeficientes aproximación")
 with col2:
-    mSelect=st.slider("Nivel de resolución: ", min_value=1,max_value=math.trunc(math.log2(len(datosSelect)))-1 ,value=math.trunc(math.log2(len(datosSelect))/2))
+    mSelect=st.slider("Nivel de descomposición: ", min_value=1,max_value=math.trunc(math.log2(len(datosSelect)))-1 ,value=math.trunc(math.log2(len(datosSelect))/2))
 
     seriesP=obtenerSeriesPreprocesadas(datosSelect,seriesSelect,mSelect,optionW)
     datosP=pd.DataFrame(seriesP,index=seriesSelect,columns=["c"+str(indice) for indice in np.arange(len(seriesP[0]))+1])
@@ -148,7 +148,10 @@ Para poder visualizar los vectores soporte y el hiperplano de separación es pos
 Para ello se utiliza el **análisis de componentes principales**."""
 st.write(texto3)
 
-texto4=r"""Se parte de un vector $X = (X_{1}, \dots, X_{p})^{t}$ de p dimensiones y se desea pasar a un vector reducido $Z = (X_{1}, \dots ,Z_{r})^{t}$, con $r<p$, obtenido a partir de $X$ y que contenga la máxima información (dispersión) que posee $X$. 
+texto4=r"""
+La reducción de la dimensionalidad mejora el rendimiento de los algoritmos de aprendizaje automático al transformar el conjunto de datos en otro de menor dimensión, pero que sigue conservando las principales características de los datos originales. El análisis de componentes principales permite identificar patrones en los datos y facilita la visualización de los mismos, puesto que al considerar únicamente las dos primeras componentes, es posible representar las series en el plano euclídeo.
+
+Se parte de un vector $X = (X_{1}, \dots, X_{p})^{t}$ de p dimensiones y se desea pasar a un vector reducido $Z = (X_{1}, \dots ,Z_{r})^{t}$, con $r<p$, obtenido a partir de $X$ y que contenga la máxima información (dispersión) que posee $X$. 
 Se define la **primera componente principal** de $X$ como:
 $$
 Z_{1}=V_{1}^{t}X=V_{11}X_{1}+\dots+V_{p1}X_{p}, \: con \ V_{1}=(V_{11}, \dots, V_{p1})^{t} \:\epsilon \: \mathbb{R}^{p}
@@ -231,7 +234,7 @@ with col2:
 st.write("Si considera que el reparto de ejemplos de entrenamiento y test no está equilibrado puede volver a realizar un reparto aleatorio pinchando en el botón de Volver a barajar")
 
 st.subheader("Hiperplano de separación", divider="red")
-
+st.write("Seleccione el parámetro de regularización C y el Kernel para obtener el hiperplano de separación. Para el cálculo de este hiperplano de separación, la función utilizada en la web tiene implementado el método **uno frente a uno**. ")
 col1, col2, col3 = st.columns(3)
 with col1:
     cSelect=st.slider("C: ", min_value=1,max_value=100 ,value=10)
@@ -258,6 +261,7 @@ modelo.fit(xEntrenamiento.values, yEntrenamiento.ravel())
 dibujarHiperplanoMulti(modelo,c,xEntrenamiento,yEntrenamiento,optionK)
 
 st.subheader("Métricas de evaluación", divider="red")
+st.write("En la siguiente gráfica se muestra la matriz de confusión para los ejemplos reservados para el test y la proporción de datos clasificados correctamente. Un buen resultado se reflejaría en la matriz de confusión con una diagonal (de la parte superior izquierda a la parte inferior derecha) en color azul oscuro y un color muy claro para el resto de celdas. ")
 matrizConfusion3(modelo,clases,xTest,yTest)
 
 clases2,x2,y2=etiquetar(datosP)
@@ -265,7 +269,10 @@ xEntrenamiento2, xTest2, yEntrenamiento2, yTest2 = train_test_split(x2,y2.values
 
 texto6="""Para más de dos dimensiones no podemos visualizar los hiperplanos de separación en el plano bidimensional pero sí se pueden
 ajustar los modelos y calcular medidas de ajuste y las matrices de confusión. A continuación, se compara el ajuste realizado para
-los coeficientes de aproximación de las señales procesadas mediante la transformada wavelet (con el nivel de profundidad seleccionado más arriba)."""
+los coeficientes de aproximación de las señales procesadas mediante la transformada Wavelet (con el nivel de profundidad seleccionado más arriba).
+
+Hay que recordar que la acuracidad proporciona la proporción de ejemplos clasificados correctamente. 
+"""
 
 st.write(texto6)
 cSelect2=st.slider(" C:", min_value=1,max_value=100 ,value=10,key=2)

@@ -21,9 +21,9 @@ pages = {
     ],
     "MÁQUINAS DE VECTOR SOPORTE" : [
         st.Page("PaginaWeb/clasificacion/clasificacion.py",title="Máquinas de vectores soporte (SVM)"),
-        st.Page("PaginaWeb/clasificacion/svmBinaria.py",title="Ejemplos separables linealmente"),
-        st.Page("PaginaWeb/clasificacion/svmBinariaCs.py",title="Ejemplos cuasi-separables linealmente"),
-        st.Page("PaginaWeb/clasificacion/svmBinariaNs.py",title="Ejemplos no separables linealmente"),
+        st.Page("PaginaWeb/clasificacion/svmBinaria.py",title="Datos separables linealmente"),
+        st.Page("PaginaWeb/clasificacion/svmBinariaCs.py",title="Datos cuasi-separables linealmente"),
+        st.Page("PaginaWeb/clasificacion/svmBinariaNs.py",title="Datos no separables linealmente"),
         st.Page("PaginaWeb/clasificacion/svmMultinomial.py",title="SVMs para clasificación multinomial")
     ]
 }

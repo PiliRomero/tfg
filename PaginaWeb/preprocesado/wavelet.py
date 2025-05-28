@@ -9,35 +9,42 @@ st.title("Wavelets")
 
 
 texto1=r"""
-La transformada wavelet permite analizar de modo eficiente señales no estacionarias y que presenten fenómenos transitorios y con alta frecuencia. Descomponen la señal (estacionaria o no estacionaria) en componentes de tiempo y frecuencia.
+La transformada Wavelet permite analizar de modo eficiente señales no estacionarias y que presenten fenómenos transitorios y con alta frecuencia. Descomponen la señal (estacionaria o no estacionaria) en componentes de tiempo y frecuencia.
 
-Mientras que la transformada de Fourier descompone la señal en componentes sinusoidales de distintas frecuencias, la transformada wavelet trocea la señal en versiones reescaladas y trasladadas de una señal que se denominará wavelet madre.
+Mientras que la transformada de Fourier descompone la señal en componentes sinusoidales de distintas frecuencias, la transformada Wavelet trocea la señal en versiones reescaladas y trasladadas de una señal que se denominará Wavelet madre.
 
-Una wavelet es una señal oscilatoria de corta duración con energía finita ($\int_{-∞}^{+∞} \left\| ψ(t)\right\|^{2}dt \; <\; ∞$) y concentrada en un intervalo temporal.
+Una Wavelet es una señal oscilatoria de corta duración con energía finita ($\int_{-∞}^{+∞} \left\| ψ(t)\right\|^{2}dt \; <\; ∞$) y concentrada en un intervalo temporal.
 
-En función de la señal que se va a estudiar se elige una wavelet a la que se denominará **wavelet madre** $\psi(t)$. A partir de la wavelet madre se pueden definir nuevas wavelets añadiendo parámetros de escala (a)  y traslación (b):
+En función de la señal que se va a estudiar se elige una Wavelet a la que se denominará **Wavelet madre** $\psi(t)$ y a partir de ella se pueden definir nuevas Wavelets añadiendo parámetros de escala (a)  y traslación (b):
 $$
-\psi_{a,b}(t)=\frac{1}{\sqrt{a}}\psi \left ( \frac{t-b}{a} \right )
+\psi_{a,b}(t)=\frac{1}{\sqrt{a}}\psi \left ( \frac{t-b}{a} \right), \; t \; \epsilon \;  \mathbb{R}, \; a \; b, \; \epsilon  \; \mathbb{R}, \; a>0  
 $$
-Las wavelets $\psi_{a,b}(t)$ tienen la fisma forma que la wavelet madre pero diferente escala y distinta ubicación.  
+Las Wavelets $\psi_{a,b}(t)$ tienen la fisma forma que la wavelet madre pero diferente escala y distinta ubicación.  
 """
 st.markdown(texto1)
 
 st.header("Transformada de wavelet continua (CWT)")
 
 texto2=r"""
+Se define la transformada Wavelet continua mediante la ecuación: 
 $$
-CWT(a,b)=\int f(t) \psi_{a,b}^{*}(t)dt
+CWT(a,b)=\int f(t) \psi_{a,b}^{*}(t)dt, \; con \; a, \; b \;  \epsilon  \; \mathbb{R}, \; a>0  
 $$
 donde $f(t)$ es una señal continua que se quiere analizar y * representa el complejo conjugado (misma componente real y la parte imaginaria cambiada de signo).
 
-Cuando el factor de escala es pequeño ($a \;\epsilon \;(0,1))$ se tiene una wavelet contraída y se captan los detalles de la serie que cambian rápidamente.  Los valores pequeños de $a$ se corresponden a altas frecuencias. Para valores grandes de $a$ (mayores que uno) las wavelets son dilatadas que captan los detalles que cambian más lentamente (bajas frecuencias).
+Cuando el factor de escala es pequeño ($a \;\epsilon \;(0,1))$ se tiene una Wavelet contraída y se captan los detalles de la serie que cambian rápidamente.  Los valores pequeños de $a$ se corresponden a altas frecuencias. Para valores grandes de $a$ (mayores que uno) las Wavelets son dilatadas que captan los detalles que cambian más lentamente (bajas frecuencias).
+
+Hay que tener en cuenta que la transformada Wavelet no representa del todo la señal. Es necesario considerar la transformación 
+de la función escala. Las funciones escala juegan el papel de funciones promedio.
+$$
+\phi_{a,b}(t)=\frac{1}{\sqrt{a}}\phi \left ( \frac{t-b}{a} \right), \; t \; \epsilon \;  \mathbb{R}, \; a \; b, \; \epsilon  \; \mathbb{R}, \; a>0  
+$$
 """
 st.markdown(texto2)
 
-st.header("Transformada de wavelet discreta (DWT)")
+st.header("Transformada de Wavelet discreta (DWT)")
 texto3=r"""
-La transformada de wavelet discreta se obtiene tomando valores discretos de los parámetros a y b para la transformada de wavelet continua:
+La transformada de Wavelet discreta se obtiene tomando valores discretos de los parámetros a y b para la transformada de Wavelet continua:
 $$
 a =2^{j}
 $$
@@ -49,12 +56,12 @@ $$
 \psi_{j,k}(t)=(2^{j})^{-1/2} \psi \left ( \frac{t-k2^{j}}{2^{j}} \right )=2^{-j/2} \psi \left( 2^{-j}t-k\right), \; con \; j,k \; \epsilon \;\mathbb{Z}
 $$
 
-De este modo se puede calcular la transformada de wavelet discreta como:
+De este modo se puede calcular la transformada de Wavelet discreta como:
 $$
-DWT(j,k) = \int f(t) \psi_{j,k}^{*}(t) dt
+DWT(j,k) = \int f(t) \psi_{j,k}^{*}(t) dt, \; j, \; k \; \epsilon \; \mathbb{Z}
 $$
 
-Una función $f(t)$ de soporte finito puede ser reconstruída como suma de los coeficientes wavelets $DWT(j,k)$ multiplicados por las funciones $ \psi_{j,k}(t)$ (si forman una base ortonormal):
+Una función $f(t)$ de soporte finito puede ser reconstruída como suma de los coeficientes Wavelets $DWT(j,k)$ multiplicados por las funciones $ \psi_{j,k}(t)$ (si forman una base ortonormal):
 
 $$
 f(t)=\sum_{j,k}DWT(j,k)\psi_{j,k}(t)= \sum_{j,k}DWT(j,k)2^{-j/2}\psi(2^{-j}t-k)
@@ -67,9 +74,9 @@ $$
 f(t) = \sum_{k}2^{-M/2}c_{M}(k) \phi(2^{-M}t-k) + \sum_{j=1}^{M} \sum_{k}2^{-j/2}d_{j}(k)\psi(2^{-j}t-k)
 $$
 
-donde $\phi(t)$ es la función escala (va a jugar el papel de función promedio). Las funciones wavelet son las encargadas de representar los detalles de la función $f(t)$, mientras que las funciones de escala realizan una aproximación.
+donde $\phi(t)$ es la función escala. Las funciones Wavelet son las encargadas de representar los detalles de la función $f(t)$, mientras que las funciones de escala realizan una aproximación.
 
-La transformada wavelet se implementa como un árbol jerárquico de filtrado organizado en niveles de descomposición.
+La transformada Wavelet se implementa como un árbol jerárquico de filtrado organizado en niveles de descomposición.
 """
 st.markdown(texto3)
 
@@ -78,13 +85,13 @@ st.markdown("![ArbolFiltrado.jpg](data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYAB
 texto4=r"""
 En un **banco de filtros** la señal de entrada se descompone en dos señales: una con frecuencias bajas (aproximación de la señal original) y otra con frecuencias altas (se asocia a los detalles). A la salida de los filtros se aplica un diezmado para descartar una de cada dos muestras. Si no se aplicase este diezmado a la salida del filtro se tendría el doble de datos que a la entrada.
 
-El árbol jerárquico de filtrado consiste en implementar una serie de bancos de filtros. A la salida de cada etapa $j$ del filtrado jerárquico se obtienen los coeficientes de aproximación  $c_{j}$  y los coeficientes de detalle $d_{j}$ . La entrada para la siguiente etapa ($j+1$) son los coeficientes de aproximación de la etapa j ($c_{j}$). De esta forma se obtiene un vector de coeficientes wavelet $c_{M}, \; d_{M}, \; d_{M−1}, \; ⋯, \: d_{1}$.
+El árbol jerárquico de filtrado consiste en implementar una serie de bancos de filtros. A la salida de cada etapa $j$ del filtrado jerárquico se obtienen los coeficientes de aproximación  $c_{j}$  y los coeficientes de detalle $d_{j}$ . La entrada para la siguiente etapa ($j+1$) son los coeficientes de aproximación de la etapa j ($c_{j}$). De esta forma se obtiene un vector de coeficientes Wavelet $c_{M}, \; d_{M}, \; d_{M−1}, \; ⋯, \: d_{1}$.
 
 A partir de los coeficientes $c_{M}, \; d_{M}, \; d_{M−1}, \; ⋯, \: d_{1}$, es posible reconstruir la señal original mediante otra estructura de filtros similar a la descrita anteriormente.
 
-La transformada de wavelet se puede utilizar, además de para la compresión de señales, para reducir el ruido de una señal. En primer lugar, se seleccionaría una función wavelet madre y se aplica la transformada wavelet a la señal inicial con ruido. A continuación se realiza un "recorte de coeficientes" y se eliminan los componentes de ruido. Finalmente, se realiza la transformación wavelet inversa para obtener la señal inicial pero sin ruido.
+La transformada de Wavelet se puede utilizar, además de para la compresión de señales, para reducir el ruido de una señal. En primer lugar, se seleccionaría una función Wavelet madre y se aplica la transformada Wavelet a la señal inicial con ruido. A continuación se realiza un "recorte de coeficientes" y se eliminan los componentes de ruido. Finalmente, se realiza la transformación Wavelet inversa para obtener la señal inicial pero sin ruido.
 
-Una de las wavelet más simples que se pueden definir es la **haar**.
+Una de las Wavelet más simples que se pueden definir es la **haar**.
 """
 st.markdown(texto4)
 
@@ -156,7 +163,7 @@ else:
         tiposSeries=np.unique(list(map(lambda x: x[0:x.find('_')] if '_' in x else x,nombreSeries)))
 
     else:
-        st.page_link("./senhales/senhales.py", label="Debe subir un archivo válido al final de la página de señales digitales")
+        st.page_link("./PaginaWeb/senhales/senhales.py", label="PULSE en el enlace para subir un archivo válido al final de la página de señales digitales")
         datos=getDatosTF()
         nombreSeries=getNombreSeriesTF()
         tiposSeries=getTipoSeriesTF()  
@@ -193,7 +200,7 @@ with col2:
     dibujarSerie(serie)
 
 texto6=r"""
-PyWavelets es un software para el cálculo de la transformada de wavelet de código abierto para Python. Mediante la función $\texttt{dwt}$ se puede calcular los coeficientes de aproximación y detalle para un único nivel de resolución
+PyWavelets es un software para el cálculo de la transformada de Wavelet de código abierto para Python. Mediante la función $\texttt{dwt}$ se puede calcular los coeficientes de aproximación y detalle para un único nivel de descomposición
 """
 st.write(texto6)
 
@@ -222,9 +229,9 @@ digujarCoeficientes(serie,optionW)
 st.subheader("Suavizado", divider="red")
 
 texto7=r"""
-La función $\texttt{wavedec}$ de la librería PyWavelets permite fijar el nivel de resolución M.
+La función $\texttt{wavedec}$ de la librería PyWavelets permite fijar el nivel de descomposición M.
 
-Si se hacen igual a cero todos los coeficientes de detalle $d$ para los niveles de resolución, es decir, se aislan los coeficientes wavelet correspondientes a las componentes de alta frecuencia y se calcula la transformada de wavelet discreta inversa se obtiene:
+Si se hacen igual a cero todos los coeficientes de detalle $d$ para los niveles de resolución, es decir, se aíslan los coeficientes wavelet correspondientes a las componentes de alta frecuencia y se calcula la transformada de wavelet discreta inversa se obtiene:
 """
 
 st.write(texto7)
@@ -232,10 +239,10 @@ st.write(texto7)
 col21, col22 = st.columns(2)
 with col21:
     texto8="""
-    Fíjese un nivel de resolución y véase como cambia la transformada wavelet inversa al convertir en ceros todos los coeficientes de detalle para todos los niveles.
+    Fíjese un nivel de descomposición y véase como cambia la transformada Wavelet inversa al convertir en ceros todos los coeficientes de detalle para todos los niveles.
     """
     st.write(texto8)
-    mSelec=st.slider("Nivel de resolución: ", min_value=1,max_value=math.trunc(math.log2(len(serie.index)))-1 ,value=math.trunc(math.log2(len(serie.index))/2))
+    mSelec=st.slider("Nivel de descomposición: ", min_value=1,max_value=math.trunc(math.log2(len(serie.index)))-1 ,value=math.trunc(math.log2(len(serie.index))/2))
 
     texto9="""
     **Número de coeficientes de aproximación** :

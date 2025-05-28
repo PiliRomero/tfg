@@ -9,14 +9,22 @@ from PaginaWeb.funciones.fun import *
 st.title("Agrupamiento jerárquico")
 
 texto1=r"""
-La técnica de agrupamiento parte de un conjunto de instancias o ejemplos de entrenamiento sin etiquetar. El objetivo es obtener una jerarquía de clases de nodos (clústeres). Cada una de estas clases contará con un subconjunto de instancias que han de ser similares entre sí.
+El agrupamiento jerárquico es una técnica de aprendizaje automático no supervisado que agrupa las instancias no etiquetadas en clases. El objetivo es construir una jerarquía de
+clases de nodos (clústeres) de modo que cada clase contenga un subconjunto de instancias que han de ser similares entre sí. 
 
-Los pasos a seguir son:
+A grandes rasgos los pasos que sigue el agrupamiento jerárquico son:
 1. Se crea una clase por cada instancia
 2. Se buscan las dos clases más parecidas según la medida de similitud establecida. En caso de que todas las variables sean continuas se suele trabajar con distancias, siendo la distancia euclídea la más utilizada.
 3. Se crea una nueva clase que agrupa a las dos clases seleccionadas en el punto 2.
 4. Se calcula el **centroide** de cada clase, que es un punto equidistante de las instancias pertenecientes a cada clase.  
 5. Volver al paso 2 hasta que únicamente quede una clase (nodo raíz)
+
+Si se desea realizar un agrupamiento jerárquico para los ejemplos recogidos en la figura que se muestra a continuación: """
+st.write(texto1)
+st.image("./PaginaWeb/imagenes/aglomerativo.png")
+texto11=r"""en primer lugar, se agrupan las clases H y F por ser las más próximas. A continuación se forma un nuevo clúster con las observaciones G y J. En
+el siguiente paso se añade E al clúster formado por G y J. En la iteración posterior se unen B y D para formar un nuevo clúster. Así sucesivamente
+hasta que los 10 ejemplos formen parte del mismo clúster. 
 
 Como se puede observar se trata de un algoritmo de "abajo hacia arriba".
 Para calcular la distancia entre dos clases existen diferentes técnicas, entre las que cabe destacar:
@@ -29,7 +37,7 @@ $$
 $$
 donde $c_{A}$ y $c_{B}$ con los centroides de las clases A y B y $c_{A \cup B}$ es el centroide tras unir ambas clases.
 """
-st.markdown(texto1)
+st.markdown(texto11)
 st.subheader("Selección de datos", divider="red")
 
 
@@ -53,7 +61,7 @@ else:
         tiposSeries=np.unique(list(map(lambda x: x[0:x.find('_')] if '_' in x else x,nombreSeries)))
 
     else:
-        st.page_link("./senhales/senhales.py", label="Debe subir un archivo válido al final de la página de señales digitales")
+        st.page_link("./PaginaWeb/senhales/senhales.py", label="PULSE en el enlace para subir un archivo válido al final de la página de señales digitales")
         datos=getDatosTF()
         nombreSeries=getNombreSeriesTF()
         tiposSeries=getTipoSeriesTF()  
@@ -107,13 +115,13 @@ with col2:
 texto2="""
 Para aplicar la técnica de agrupamiento jerárquico con el fin de tratar de identificar formas de onda completas, 
 en primer lugar se realiza el **preprocesamiento** de las señales. En los siguientes ejemplos se optó por aplicar la 
-transformada de wavelet. Se fija un nivel de resolución M común para todas las señales. Cada instancia, o ejemplo 
-de entrenamiento del algoritmo, estará formada por los coeficientes de aproximación para este nivel de resolución. 
+transformada de Wavelet, por poderse aplicar a señales estacionarias o no estacionarias. Se fija un nivel de descomposición M común para todas las señales. Cada instancia, o ejemplo 
+de entrenamiento del algoritmo, estará formada por los coeficientes de aproximación para este nivel de descomposición. 
 De este modo se representará cada una de las señales originales por un número de coeficientes que dependerá de la profundidad M.
- A mayor profundidad la reducción de la dimensionalidad va a ser más significativa pero el ajuste va a ser peor.
+ A mayor profundidad la reducción de la dimensionalidad va a ser más significativa, pero el ajuste va a ser peor.
 """
 st.write(texto2)
-st.subheader("Selección de wavelet y nivel de resolución", divider="red")
+st.subheader("Selección de wavelet y nivel de descomposición", divider="red")
 col1, col2 = st.columns(2)
 with col1:
     optionF=st.selectbox(
@@ -152,7 +160,7 @@ st.subheader("Dendrograma", divider="red")
 
 texto3="""
 El **dendrograma** es un árbol que permite visualizar como se agrupan las instancias en los diferentes niveles.  
-Los nodos hoja del árbol se corresponden con las instancias individuales (transformadas wavelet) y el nodo raíz es la 
+Los nodos hoja del árbol se corresponden con las instancias individuales (transformadas Wavelet) y el nodo raíz es la 
 clase que agrupa a todas las instancias.
 """
 
@@ -175,13 +183,12 @@ st.subheader("Métrica de evaluación", divider="red")
 texto5="""
 A continuación se pide introducir el número de clústeres para el agrupamiento jerárquico y se dibujan las señales agrupadas en función del clúster al que pertenecen. Además, se calcula el índice de  Davies Bouldin. 
 
-El **índice de Davis Doulbdin** es una métrica de evaluación interna (sin referencias externas) que trata de medir la bondad de la agrupación obtenida. 
+El **índice de Davies Douldin** es una métrica de evaluación interna (sin referencias externas) que trata de medir la bondad de la agrupación obtenida. 
 
 Este índice se calcula como el cociente de las medias de las distancias dentro del clúster y las distancias entre los clústeres.
 
 Cuanto más próximo a cero esté el valor del índice de Davis Bouldin mejor será la bondad del ajuste (mayor cohesión dentro de los clústeres y mayor separación entre los diferentes clústeres). 
 """
-
 
 st.write(texto5)
 st.subheader("Representación gráfica de los grupos", divider="red")
@@ -211,6 +218,8 @@ Para ello se utiliza el **análisis de componentes principales**."""
 st.write(texto6)
 
 texto7=r"""
+La reducción de la dimensionalidad mejora el rendimiento de los algoritmos de aprendizaje automático al transformar el conjunto de datos en otro de menor dimensión, pero que sigue conservando las principales características de los datos originales. El análisis de componentes principales permite identificar patrones en los datos y facilita la visualización de los mismos, puesto que al considerar únicamente las dos primeras componentes, es posible representar las series en el plano euclídeo.
+
 Se parte de un vector $X = (X_{1}, \dots, X_{p})^{t}$ de p dimensiones y se desea pasar a un vector reducido $Z = (X_{1}, \dots ,Z_{r})^{t}$, con $r<p$, obtenido a partir de $X$ y que contenga la máxima información (dispersión) que posee $X$. 
 
 Se define la **primera componente principal** de $X$ como:
