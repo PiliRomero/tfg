@@ -5,8 +5,15 @@ import pywt
 import math
 from PaginaWeb.funciones.fun import *
 
+#################################
+# Transformada Wavelet
+#################################
+
 st.title("Wavelets")
 
+#################################
+# Teoría
+#################################
 
 texto1=r"""
 La transformada Wavelet permite analizar de modo eficiente señales no estacionarias y que presenten fenómenos transitorios y con alta frecuencia. Descomponen la señal (estacionaria o no estacionaria) en componentes de tiempo y frecuencia.
@@ -140,6 +147,9 @@ plt.cla()
 plt.close(fig1)
 st.divider()
 
+########################################################################
+# Selección del conjunto de datos (ejemplo o facilitados por el usuario)
+########################################################################
 
 st.subheader("Selección de datos", divider="red")
 
@@ -171,12 +181,10 @@ else:
   
 with st.expander("Ver datos"):
     st.write(datos)
-#######################################################
-#datos=getDatosTF()
-#nombreSeries=getNombreSeriesTF()
-#tiposSeries=getTipoSeriesTF()
-######################################################
 
+#################################
+# Selección de la señal
+#################################
 
 col1, col2 = st.columns(2)
 with col1:
@@ -204,6 +212,10 @@ PyWavelets es un software para el cálculo de la transformada de Wavelet de cód
 """
 st.write(texto6)
 
+#################################
+# Elección de la wavelet madre
+#################################
+
 st.subheader("Elección de la wavelet madre", divider="red")
 
 col1, col2 = st.columns(2)
@@ -223,8 +235,17 @@ with col2:
 
     dibujarWavelet(optionW)
 
+
+#########################################
+# Coeficientes de aproximación y detalle
+#########################################
+
 st.subheader("Coeficientes de aproximación y detalle", divider="red")
 digujarCoeficientes(serie,optionW)
+
+#################################
+# Suavizado
+#################################
 
 st.subheader("Suavizado", divider="red")
 

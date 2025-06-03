@@ -1,4 +1,9 @@
 import streamlit as st
+
+#################################
+# Medidas de similitud
+#################################
+
 st.title("Medidas de similitud")
 
 texto1=r"""

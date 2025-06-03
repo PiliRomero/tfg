@@ -6,7 +6,15 @@ from sklearn.metrics import davies_bouldin_score
 from sklearn.preprocessing import scale
 from PaginaWeb.funciones.fun import *
 
+#################################
+# Agrupammiento jerárquico
+#################################
+
 st.title("Agrupamiento jerárquico")
+
+#################################
+# Teoría
+#################################
 
 texto1=r"""
 El agrupamiento jerárquico es una técnica de aprendizaje automático no supervisado que agrupa las instancias no etiquetadas en clases. El objetivo es construir una jerarquía de
@@ -38,6 +46,11 @@ $$
 donde $c_{A}$ y $c_{B}$ con los centroides de las clases A y B y $c_{A \cup B}$ es el centroide tras unir ambas clases.
 """
 st.markdown(texto11)
+
+########################################################################
+# Selección del conjunto de datos (ejemplo o facilitados por el usuario)
+#########################################################################
+
 st.subheader("Selección de datos", divider="red")
 
 
@@ -70,12 +83,9 @@ else:
 with st.expander("Ver datos"):
     st.write(datos)
 
-#######################################################
-#datos=getDatosTF()
-#nombreSeries=getNombreSeriesTF()
-#tiposSeries=getTipoSeriesTF()
-######################################################
-
+###################################################################
+# Selección y preprocesado de señales mediante transformada wavelet
+###################################################################
 
 col1, col2 = st.columns(2)
 with col1:
@@ -151,10 +161,18 @@ if normalizar:
 with st.expander("Ver coeficientes de aproximación" + cadena):
     st.write(datosP)
 
+######################################
+# Seleccion de las distancia y medida
+######################################
+
 st.subheader("Selección de distancia de enlace y medida", divider="red")
 
 enlace=linkage()
 medida=medida(enlace)
+
+#################################
+# Dendograma
+#################################
 
 st.subheader("Dendrograma", divider="red")
 
@@ -175,8 +193,16 @@ El dendrograma resulta de utilidad para determinar las instancias que pertenecen
 st.write(texto4)
 
 alturaSelect=st.slider("Altura de corte del dendrograma: ", min_value=0.0,max_value=max(cluster_dist.distances_) ,value=max(cluster_dist.distances_)/2)
+et=st.checkbox("Ver etiquetas de los datos")
 
-dibujarDendograma(cluster_dist,alturaSelect,medida,enlace)
+if et:
+    dibujarDendograma(cluster_dist,alturaSelect,medida,enlace,seriesSelect)
+else:
+    dibujarDendograma2(cluster_dist,alturaSelect,medida,enlace)
+
+#################################
+# Métricas de evaluación
+#################################
 
 st.subheader("Métrica de evaluación", divider="red")
 
@@ -191,6 +217,11 @@ Cuanto más próximo a cero esté el valor del índice de Davis Bouldin mejor se
 """
 
 st.write(texto5)
+
+#########################################
+# Representación gráfica de los clústeres
+#########################################
+
 st.subheader("Representación gráfica de los grupos", divider="red")
 
 nCSelect=st.slider("Número de clústeres: ", min_value=2,max_value=len(datosP) ,value=2)
@@ -203,6 +234,10 @@ dabo=davies_bouldin_score(datosP, clases)
 st.write("Índice de Davies Bouldin: " + str(round(dabo,3)))
 
 dibujarClusters(nCSelect,datosP,clases)
+
+#################################
+# Componentes principales
+#################################
 
 st.subheader("Reducción de la dimensionalidad", divider="red")
 #componentesPrincipales(datosP)
@@ -254,4 +289,11 @@ with st.expander("Ver explicación de componentes principales"):
     st.write(texto7)
 with st.expander("Ver porcentaje de varianza explicada"):
     componentesPrincipales(datosP)
+
+#################################
+# Clústeres en el plano
+#################################
+     
 dibujarCluster2d(datosCP,clasesCP,nCSelect)
+with st.expander("Ver gráfico iterativo"):
+    dibujarCluster2d_bis(datosCP,clasesCP,nCSelect)

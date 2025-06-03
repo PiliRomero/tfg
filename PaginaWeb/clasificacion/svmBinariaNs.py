@@ -17,7 +17,9 @@ no lineal  ($\Phi$) en un espacio transformado de alta dimensionalidad que se de
 ($\mathfrak{F}$). Es decir:
 
 
-$$\Phi: \; \mathbb{X} \to \mathfrak{F}$$
+$$
+\Phi: \; \mathbb{X} \to \mathfrak{F}
+$$
 
 Normalmente, la dimensión del espacio de características será bastante mayor que la dimensión del espacio original.
 

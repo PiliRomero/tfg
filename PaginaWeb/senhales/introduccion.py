@@ -1,5 +1,9 @@
 import streamlit as st
 
+###########################
+# PORTADA DE LA PAGINA WEB
+###########################
+
 st.markdown("<h1 style='text-align: center; color: red;'>Web dinámica para el análisis de series temporales utilizando aprendizaje automático</h1>", unsafe_allow_html=True)
 # st.title("Web dinámica para el análisis de series temporales utilizando aprendizaje automático")
 

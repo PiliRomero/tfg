@@ -4,9 +4,16 @@ import pandas as pd
 import pywt
 from PaginaWeb.funciones.fun import *
 
-
+#################################
+# Medidas de ajuste
+#################################
 
 st.title("Medidas de ajuste")
+
+#################################
+# Teoría
+#################################
+
 st.write("El error cuadrático medio (ECM) y el error absoluto medio (EAM) son dos medidas estadísticas ampliamente utilizadas para medir la bondad del ajuste cuando se realizan predicciones. Se puede pensar en aplicar estas dos medidas para cuantificar la distancia entre una señal y la señal suavizada tras aplicarle la transformada de Fourier o la transformada Wavelet.")
 st.header("Error cuadrático medio")
 texto1=r"""
@@ -29,6 +36,10 @@ de Fourier. Es decir, se parte de una señal digital, se calcula la transformada
 Para el análisis de Fourier se anulan los coeficientes de la tranfsormada rápida de Fourier excepto los N que tengan el módulo más alto.
 """
 st.markdown(texto2)
+
+########################################################################
+# Selección del conjunto de datos (ejemplo o facilitados por el usuario)
+########################################################################
 
 st.subheader("Selección de datos", divider="red")
 
@@ -61,11 +72,9 @@ else:
 with st.expander("Ver datos"):
     st.write(datos)
 
-#######################################################
-#datos=getDatosTF()
-#nombreSeries=getNombreSeriesTF()
-#tiposSeries=getTipoSeriesTF()
-######################################################
+#################################
+# Elección de la señal
+#################################
 
 col1, col2 = st.columns(2)
 with col1:
@@ -87,6 +96,11 @@ with col1:
 
 with col2:
     dibujarSerie(serie)
+
+
+#################################
+# Cálculo de los ECM y EAM
+#################################
 
 col1, col2 = st.columns(2)
 with col1:

@@ -4,6 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PaginaWeb.funciones.fun import *
 
+#################################
+# SEÑALES
+#################################
 
 st.title("Señales")
 
@@ -11,6 +14,9 @@ st.write("Una **señal** es una magnitud que se puede representar como función 
 
 st.header("Clasificación de las señales")
 
+#################################
+# Teoría
+#################################
 
 texto1=r"""
 #### **Señales continuas y discretas**
@@ -98,15 +104,17 @@ Los datos utilizados ya están convenientemente muestreados y normalizados.
 
 st.markdown(texto3)
 
-#datos=pd.read_csv("./datos/datos.csv")
-#datosMuestreados=pd.read_csv("./datos/sMuestreadas.csv")
+#################################
+# Carga de señales de ejemplo
+#################################
+
 datosMuestreadosN=getDatosTF()
 nombreSeries=getNombreSeriesTF()
 tiposSeries=getTipoSeriesTF()
 
-#datosMuestreadosN=pd.read_csv("./datos/sMuestreadasN.csv")
-#nombreSeries=list(datosMuestreados.columns)[1:]
-#tiposSeries=np.unique(list(map(lambda x: x[0:x.find('_')],nombreSeries)))
+#################################
+# Selección de la señal
+#################################
 
 col1, col2 = st.columns(2)
 
@@ -124,12 +132,6 @@ with col1:
         options=ls     
     )  
 
-# Serie seleccionada
-#serie=pd.Series(datos[optionS])
-#serie.index=datos['t']
-#serie.dropna(inplace=True)
-#serieM=pd.Series(datosMuestreados[optionS])
-#serieM.index=datosMuestreados['t']"""
 serieMN=pd.Series(datosMuestreadosN[optionS])
 serieMN.index=datosMuestreadosN['t']
 
@@ -143,28 +145,9 @@ with col2:
     plt.cla()
     plt.close(fig1)
 
-#with col2:
-#    fig1, ax1 = plt.subplots()
-#    ax1.plot(serie)
-#    ax1.set_xlabel('Tiempo')
-#    ax1.set_ylabel('Señal')
-#    ax1.set_title('Señal original '+ optionS)
-#    st.pyplot(fig1)
-
-#fig2=plt.figure(figsize=(10,6))
-#f1= fig2.add_subplot(221)
-#f1.plot(serieM)
-#f1.set_xlabel('Tiempo')
-#f1.set_ylabel('Señal')
-#f1.set_title('Señal muestreada: '+optionS)
-
-#f2= fig2.add_subplot(222)
-#f2.plot(serieMN)
-#f2.set_xlabel('Tiempo')
-#f2.set_ylabel('Señal')
-#f2.set_title('Señal muestreada normalizada: '+optionS)
-
-#st.pyplot(fig2)
+#################################
+# Carga de datos externos
+#################################
 
 st.subheader("Subir fichero de datos", divider="red")
 

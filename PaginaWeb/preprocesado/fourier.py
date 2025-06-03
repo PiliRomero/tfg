@@ -4,7 +4,15 @@ import pandas as pd
 #import matplotlib.pyplot as plt
 from PaginaWeb.funciones.fun import *
 
+#################################
+# Transformada de Fourier
+#################################
+
 st.title("Transformada de Fourier")
+
+#################################
+# Teoría
+#################################
 
 st.markdown("La transformada de Fourier descompone la señal en componentes sinusoidales con diferentes frecuencias, es decir, permite representar las señales en el **dominio de frecuencias**")
 st.header("Transformada de Fourier en tiempo continuo")
@@ -79,6 +87,11 @@ El algorimo de la transformada rápida de Fourier (FFT) permite reducir la compl
 Para poder aplicar la transformada discreta de Fourier de N puntos se debe verificar que $x(n)=0 \; ∀ \;n<0,\; n>N$
 """
 st.markdown(texto3)
+
+#########################################################################
+# Selección del conjunto de datos (ejemplo o facilitados por el usuario)
+#########################################################################
+
 st.subheader("Selección de datos", divider="red")
 
 ejemplo = st.radio(
@@ -110,12 +123,9 @@ else:
 with st.expander("Ver datos"):
     st.write(datos)
 
-#######################################################
-#datos=getDatosTF()
-#nombreSeries=getNombreSeriesTF()
-#tiposSeries=getTipoSeriesTF()
-######################################################
-
+#################################
+# Selección de la señal
+#################################
 
 col1, col2 = st.columns(2)
 with col1:
@@ -139,6 +149,10 @@ with col2:
 
     dibujarSerie(serie)
 
+#################################
+# Transformada rápida de Fourier
+#################################
+
 st.subheader("Representación de los coeficientes de la FFT", divider="red")
 
 texto4="""
@@ -153,6 +167,10 @@ Otra alternativa es representar el módulo y la fase de las componentes de la tr
 """
 st.write(texto5)
 dibujarTransformadaMF(serie)
+
+#################################
+# Suavizado de señales
+#################################
 
 st.subheader("Suavizado de señales", divider="red")
 
@@ -173,6 +191,7 @@ texto7="""
 A continuación se puede es posible variar el número elementos no nulos de la transformada discreta de Fourier para seguidamente calcular la inversa de Fourier y representarla en el dominio del tiempo.
 """
 st.markdown(texto7)
+
 numeroSelec = st.slider("Número: ", min_value=1,max_value=len(serie.index) ,value=max(int(len(serie.index)*0.01),2))
 dibujarSerieInv(serie,numero=numeroSelec)
 

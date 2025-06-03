@@ -19,14 +19,17 @@ from sklearn.metrics import accuracy_score
 from scipy.interpolate import CubicSpline
 import plotly.express as px
 
+# Carga de señales de fusion termonuclear normalizadas
 datosTF=pd.read_csv("./PaginaWeb/datos/sMuestreadasN.csv")
 
+# Se obtiene el nombre de las series
 nombreSeriesTF=list(datosTF.columns)[1:]
+
+# Se obtiene el tipo de series
 tiposSeriesTF=np.unique(list(map(lambda x: x[0:x.find('_')],nombreSeriesTF)))
 
 if "datosExternos" not in st.session_state:
     st.session_state.datosExternos = None
-
 
 def setDatosExternos(df):
     st.session_state.datosExternos = df
@@ -38,7 +41,7 @@ def getExternos():
 # Preprocesar señales
 ##############################
 
-
+# Función que dado un data frame de señales, normaliza las señales y las muestrea a un intervalo regular
 def preprocesarSC(df,frec=None):
     df=df.dropna()
     t=df.columns[0]
@@ -62,7 +65,9 @@ def preprocesarSC(df,frec=None):
         for i in df.columns[1:]:
             dfN[i]=(df[i]-min(df[i]))/(max(df[i])-min(df[i]))
     return dfN
-    
+
+# Función que dado un data frame comprueba si es posible aplicar los algoritmos de clasificación
+# Se establece un mínimo de 5 señales para aplicar estos algoritmos    
 def esPosibleAgrupamiento(df):
     nS=list(df.columns)[1:]
     if len(nS)<5:
@@ -70,7 +75,8 @@ def esPosibleAgrupamiento(df):
         return False
     else:
         return True
-
+    
+# Función que dato un data frame comprueba si es posible aplicar el algoritmo SVM binaria
 def esPosibleClasBin(df):
     nS=list(df.columns)[1:]
     for i in nS:
@@ -84,14 +90,8 @@ def esPosibleClasBin(df):
     else:
         return True
 
-def getDatosExternosN2(df,frec=None):
-    df=df.dropna()
-    if len(df)<20:
-        st.write("Se requier un mínimo de 20 observaciones para cada serie. Revise el tamaño de las series y los #NA")
-        return None
-    else:
-        return preprocesarSC(df,frec)
-        
+# Función que dado el data frame subido por el usuario llama a la función correspondiente para preprocesar las señales (normalicarlas y muestrearlas)
+# En caso de que no se pueda preprocesar (p.ej por tener caracteres no numéricos) devuelve un mensaje de error         
 def getDatosExternosN(df,frec=None):
     try:
         df=df.dropna()
@@ -121,7 +121,7 @@ def getTipoSeriesTF():
 ################################
 # Generales
 ################################
-# Dibujar señal
+# Función que dibuja una señal
 def dibujarSerie(serie,ventana=False):
     fig1, ax1 = plt.subplots()
     if ventana==True:
@@ -140,12 +140,11 @@ def dibujarSerie(serie,ventana=False):
     plt.close(fig1)
     
 
-
 #################################
 # Transformada de Fourier
 #################################
 
-# Calcular transformada Fourier
+# Función que devuelve la amplitud más grande (en módulo) de la transformada rápida de Fourier
 def moduloMaximo(serie,ventana=False):
     if ventana==True:
         s=serie.values * np.hamming(len(serie.index))
@@ -153,6 +152,7 @@ def moduloMaximo(serie,ventana=False):
     else:
         return max(abs(np.fft.fftshift(np.fft.fft(serie.values))))
 
+# Función que calcula el percentil 99 de la amplitud (en modulo) de la transformada rápida de Fourier
 def percentil(serie,ventana=False):
     if ventana==True:
         s=serie.values * np.hamming(len(serie.index))
@@ -160,7 +160,7 @@ def percentil(serie,ventana=False):
     else:
         return np.percentile(abs(np.fft.fftshift(np.fft.fft(serie.values))),99)
 
-# Dibujar transformada
+# Función que dibuja dos gráficas con la parte real e imaginaria de la transformada rápida de Fourier
 def dibujarTransformada(serie,ventana=False):
     if ventana==True:
         s = serie.values * np.hamming(len(serie.index))
@@ -188,7 +188,7 @@ def dibujarTransformada(serie,ventana=False):
     plt.close(fig1)
 
 
-# Dibujar transformada modulo fase
+# Función que dibuja la fase y el módulo de la transformada rápida de fourier 
 def dibujarTransformadaMF(serie,ventana=False):
     if ventana==True:
         s = serie.values * np.hamming(len(serie.index))
@@ -216,6 +216,9 @@ def dibujarTransformadaMF(serie,ventana=False):
     plt.cla()
     plt.close(fig1)
 
+# Función que dibuja la transformada inversa de Fourier tras anular los coeficentes cuyo módulo está por debajo
+# de cierto umbral (módulo). También es posible pasar el número de coeficientes que se desan que sean no nulos
+# En este caso el programa considerará no nulos los de mayor módulo
 def dibujarSerieInv(serie, modulo=None, numero=None, ventana=False):
     if ventana==True:
         s = serie.values * np.hamming(len(serie.index))
@@ -261,8 +264,10 @@ def dibujarSerieInv(serie, modulo=None, numero=None, ventana=False):
 
 #########################
 # Wavelets
-##########################S
+##########################
 
+# Función que dibuja los coeficientes de aproximación y detalle de la transormada wavelet de un sólo nivel para una señal
+# y una wavelet madre pasadas como parámetros
 def digujarCoeficientes(serie,w):
     cA,cD = pywt.dwt(serie.values,w)
     paso=2*(serie.index[1]-serie.index[0])
@@ -281,6 +286,8 @@ def digujarCoeficientes(serie,w):
     plt.cla()
     plt.close(fig1)
 
+# Función que dibuja los coeficientes de aproximación de una wavelet dado un nivel de despomposición m y una
+# wavelet madre m y la transformada Wavelet inversa una vez despreciados los coeficientes de detalle
 def dibujarCAeInv(serie,w,m):
     coeficientes = pywt.wavedec(serie.values,w, level=m)
     for i in range(1, m):
@@ -306,6 +313,7 @@ def dibujarCAeInv(serie,w,m):
     plt.close(fig1)
     return len(coeficientes[0])
 
+# Función que dibuja la gráfica de una wavelet madre discreta pasada como parámetro
 def dibujarWaveletDiscreta(w):
     [y,x]=pywt.DiscreteContinuousWavelet(w).wavefun()[1:]
     fig1,ax1=plt.subplots()
@@ -315,6 +323,7 @@ def dibujarWaveletDiscreta(w):
     plt.cla()
     plt.close(fig1)
 
+# Función que dibuja la gráfica de una wavelet madre continua pasada como parámetro
 def dibujarWaveletContinua(w):
     if w in ['cmor','shan']:
         w +='1-1'
@@ -329,6 +338,7 @@ def dibujarWaveletContinua(w):
     plt.cla()
     plt.close(fig1)
 
+# Función que dibuja la gráfica de una wavelet madre
 def dibujarWavelet(w):
     wavelistD=pywt.wavelist(kind="continuous")
     wavelistC=pywt.wavelist(kind="discrete")
@@ -339,9 +349,10 @@ def dibujarWavelet(w):
     
 
 #############################
-# Ajuste
+# Medidas de ajuste
 #############################
 
+# Función que calcula y dibuja el ECM y el EAM entre la serie original y la serie suavizada tras aplicarle la transformada wavelet
 def dibujarECM(serie,w,nmax):
     ecmF=[]
     ecmW=[]
@@ -415,6 +426,8 @@ def dibujarECM(serie,w,nmax):
 # Clustering
 ##################################
 
+# Función que dado un data frame de datos, una lista con el nombre de las series seleccionadas,
+# un nivel de descomposición y una wavelet madre preprocesa las series mediante la transformada Wavelet
 def obtenerSeriesPreprocesadas(datos,series,m,w):
     lista=[]
     for s in series:
@@ -427,6 +440,7 @@ def obtenerSeriesPreprocesadas(datos,series,m,w):
         listaP.append(c[0])
     return listaP
 
+# Menu para seleccionar la medida de enlace en el clústering
 def linkage():
     l=['ward', 'complete', 'average', 'single']
     
@@ -448,6 +462,7 @@ def linkage():
         st.write(texto)
     return option
 
+# Menú para seleccionar la distancia
 def medida(link): 
     if link=='ward':
         medidas=['euclidean']
@@ -481,6 +496,7 @@ def medida(link):
         st.write(texto)
     return option
 
+# Función para dibujar un dendograma que cambie el color de los clústeres en función de la altura de la línea de corte
 def plot_dendrogram(model, **kwargs):
     counts = np.zeros(model.children_.shape[0])
     n_samples = len(model.labels_)
@@ -488,7 +504,7 @@ def plot_dendrogram(model, **kwargs):
         current_count = 0
         for child_idx in merge:
             if child_idx < n_samples:
-                current_count += 1  # leaf node
+                current_count += 1
             else:
                 current_count += counts[child_idx - n_samples]
         counts[i] = current_count
@@ -498,7 +514,18 @@ def plot_dendrogram(model, **kwargs):
 
     dendrogram(linkage_matrix, **kwargs)
 
-def dibujarDendograma(modelo,alturaCorte,medida,enlace):
+# Función que llama a la encargada de dibujar el dendograma pasándole los parámetros oportunos y dibuja la línea de corte
+def dibujarDendograma(modelo,alturaCorte,medida,enlace,etiquetas):
+    fig, ax = plt.subplots(1, 1, figsize=(8, 4))
+    plot_dendrogram(modelo, color_threshold=alturaCorte, ax=ax, labels=etiquetas, leaf_rotation=90)
+    ax.set_title("Distancia "+str(medida) +" Linkage "+str(enlace))
+    ax.axhline(y=alturaCorte, c = 'black', linestyle='--', label='altura corte')
+    ax.legend()
+    st.pyplot(fig)
+    plt.cla()
+    plt.close(fig)
+
+def dibujarDendograma2(modelo,alturaCorte,medida,enlace):
     fig, ax = plt.subplots(1, 1, figsize=(8, 4))
     plot_dendrogram(modelo, color_threshold=alturaCorte, ax=ax)
     ax.set_title("Distancia "+str(medida) +" Linkage "+str(enlace))
@@ -508,7 +535,8 @@ def dibujarDendograma(modelo,alturaCorte,medida,enlace):
     plt.cla()
     plt.close(fig)
 
-
+# Función que dibuja las gráficas de las señales (coeficientes de aproximación) agrupadas en función del
+# clúster al que pertenezca
 def dibujarClusters(nCluster,datos,clases):
     filas=nCluster//2+nCluster%2    
     col1, col2 = st.columns(2)
@@ -531,6 +559,8 @@ def dibujarClusters(nCluster,datos,clases):
             plt.cla()
             plt.close(fig1)      
 
+# Función que dibuja un gráfico de barras con el porcentaje de variabilidad explicada por cada componente principal
+# y calcula el procentaje de variabilidad explicada por las dos primeras componentes principales
 def componentesPrincipales(datos):
     pca=PCA() 
     datosPCA=pca.fit_transform(datos)
@@ -548,6 +578,7 @@ def componentesPrincipales(datos):
     plt.cla()
     plt.close(fig1)
 
+# Función que representa en el plano un conjunto de datos tras reducir la dimensionalidad aplicando componentes principales
 def componentesPrincipales2(datos):
     pca=PCA() 
     datosPCA=pca.fit_transform(datos)
@@ -561,6 +592,7 @@ def componentesPrincipales2(datos):
     datosCP.set_index('serie',inplace=True)
     return datosCP
 
+# Función que dibuja en el plano una nube de puntos donde el color varía en función del clúster al que tertenece
 def dibujarCluster2d(datos,clases,nCluster):
     fig, ax = plt.subplots(figsize=(8, 6))
     for k in range(nCluster):
@@ -574,7 +606,18 @@ def dibujarCluster2d(datos,clases,nCluster):
     plt.cla()
     plt.close(fig)
 
+# Función que dibuja en el plano una nube de puntos donde el color varía en función del clúster al que tertenece
+# En este caso el gráfico es iterativo
+def dibujarCluster2d_bis(datos,clases,nCluster):
+    aux=datos.copy()
+    aux['clases']=clases
+    aux['clases']=aux['clases'].astype(str)
+    aux['serie']=aux.index
+    fig = px.scatter(aux, x = "pc1", y = "pc2", color = "clases",hover_name="serie",title="Gráfico dispersión de las componentes principales")   
+    fig.update_layout(xaxis_title="Primera componente principal", yaxis_title="Segunda componente principal")
+    st.plotly_chart(fig,on_select="rerun")
 
+# Función que dibuja un gráfico para poder determinar el número de clústeres óptimo mediante el método del codo
 def metodoCodo(datos):
     ssd=[]
     for i in range(12):
@@ -590,6 +633,7 @@ def metodoCodo(datos):
     plt.cla()
     plt.close(fig)
 
+# Función que devuelve el número óptimo de clústeres aplicando el método silhouette
 def optimoSilhouette(datos):
     coef=[]
     for k in range(2,len(datos)):
@@ -601,9 +645,10 @@ def optimoSilhouette(datos):
     return kOptimo
 
 ###############################
-# Clasificacion
+# Algorimos de clasificación
 ###############################
 
+# Función que etiqueta el conjunto de señales
 def etiquetar(datos):
     etiquetas=list(map(lambda x: x[0:x.find('_')],datos.index))
     clases=list(np.unique_values(etiquetas))
@@ -616,6 +661,7 @@ def etiquetar(datos):
     y.reset_index(drop=True, inplace=True)
     return clases,x,y
 
+# Función que dibuja el gráfico de sectores con la sitribución del número de señales de cada clase
 def dibujarDist(y,clases):
     fig, ax = plt.subplots()
     valores=[]
@@ -628,6 +674,7 @@ def dibujarDist(y,clases):
     plt.cla()
     plt.close(fig)
 
+# Función que dibuja un hiperplano de separación para datos cuasi separables linealmente
 def dibujarHiperplano(modelo,xE,yE,vS=False):
     xx = np.linspace(np.min(xE.iloc[:,0]), np.max(xE.iloc[:,0]), 50)
     yy = np.linspace(np.min(xE.iloc[:,1]), np.max(xE.iloc[:,1]), 50)
@@ -660,6 +707,7 @@ def dibujarHiperplano(modelo,xE,yE,vS=False):
     plt.cla()
     plt.close(fig)
 
+# Función que dibuja la matriz de confusión
 def matrizConfusion3(modelo,clases,xT,yT):
     predicciones=modelo.predict(xT.values)
     cm=confusion_matrix(yT,predicciones,labels=modelo.classes_)
@@ -670,6 +718,7 @@ def matrizConfusion3(modelo,clases,xT,yT):
     st.write("**Accuracy**: "+str(round(accuracy_score(yT,predicciones),3)))
     st.plotly_chart(fig,on_select="rerun")
 
+# Función que dibuja un hiperplano de separación para datos no separables linealmente
 def dibujarHiperplanoNL(modelo,clases,xE,yE,ker,vS=False):
     xx = np.linspace(np.min(xE.iloc[:,0]), np.max(xE.iloc[:,0]), 50)
     yy = np.linspace(np.min(xE.iloc[:,1]), np.max(xE.iloc[:,1]), 50)
@@ -689,6 +738,7 @@ def dibujarHiperplanoNL(modelo,clases,xE,yE,ker,vS=False):
     plt.cla()
     plt.close(fig)
 
+# Función que dibuja un hiperplano de separación multinomial 
 def dibujarHiperplanoMulti(modelo,clases,xE,yE,ker):
     xx = np.linspace(np.min(xE.iloc[:,0]), np.max(xE.iloc[:,0]), 50)
     yy = np.linspace(np.min(xE.iloc[:,1]), np.max(xE.iloc[:,1]), 50)

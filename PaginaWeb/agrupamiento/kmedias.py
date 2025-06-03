@@ -5,7 +5,15 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import davies_bouldin_score
 from PaginaWeb.funciones.fun import *
 
+#################################
+# Algoritmo de k medias
+#################################
+
 st.title("k-medias")
+
+#################################
+# Teoría
+#################################
 
 texto1="""
 El algoritmo de aprendizaje automático no supervisado de k-medias es un método de partición, en contrapartida con el algoritmo de agrupamiento jerárquico, en el que se parte de una clase con instancias heterogéneas y se pretende dividirla en k grupos, donde el número de grupos (k) se fija de antemano. En este algoritmo no se crea una jerarquía de clases, sino que las k clases estarán en un único nivel.
@@ -21,6 +29,11 @@ Los pasos que se han de seguir para aplicar este algoritmo se resumen en:
 5. Repetir los pasos 3 y 4 hasta que la composición de las clases no se altere o se supere un número máximo de iteraciones establecido previamente.
 """
 st.markdown(texto1)
+
+#################################################################################
+# Selección del conjunto de datos (entrenamiento o proporcionados por el usuario)
+#################################################################################
+
 st.subheader("Selección de datos", divider="red")
 
 ejemplo = st.radio(
@@ -207,6 +220,9 @@ with st.expander("Ver explicación de componentes principales"):
 with st.expander("Ver porcentaje de varianza explicada"):
     componentesPrincipales(datosP)
 dibujarCluster2d(datosCP,clasesCP,nCSelect)
+
+with st.expander("Ver gráfico iterativo"):
+    dibujarCluster2d_bis(datosCP,clasesCP,nCSelect)
 st.subheader("Comparación con el método de agrupamiento jerárquico", divider="red")
 texto8="""
 Debe tenerse en cuenta que las distintas técnicas de aprendizaje por agrupamiento no tienen que proporcionar la misma partición para el
@@ -237,3 +253,5 @@ with col22:
     dabo=davies_bouldin_score(datosCP, clasesKm)
     st.write("Índice de Davies Bouldin: " + str(round(dabo,3)))
     dibujarCluster2d(datosCP,clasesKm,nCSelect2)
+
+  
