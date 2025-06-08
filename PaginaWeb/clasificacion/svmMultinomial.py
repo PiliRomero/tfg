@@ -8,7 +8,15 @@ import matplotlib as mpl
 import plotly.express as px
 from PaginaWeb.funciones.fun import *
 
+###################################################################
+# SVM para clasificación multinomial
+###################################################################
+
 st.title("SVM para clasificación multinomial")
+
+###########
+# Teoría
+###########
 
 texto1=r"""
 Las SVM se pueden generalizar para la clasificación en más de dos categorías. Se distinguen dos enfoques:
@@ -20,6 +28,11 @@ Las SVM se pueden generalizar para la clasificación en más de dos categorías.
 - Métodos directos: no trata de descomponer el proceso de clasificación múltiple en procesos de clasificación binaria sino que realiza un único proceso de optimización combinando los problemas de clasificación binaria en un única función objetivo.
 """
 st.markdown(texto1)
+
+###################################################################
+# Selección de datos
+###################################################################
+
 st.subheader("Selección de datos", divider="red")
 
 ejemplo = st.radio(
@@ -51,11 +64,6 @@ else:
 with st.expander("Ver datos"):
     st.write(datos)
 
-#######################################################
-#datos=getDatosTF()
-#nombreSeries=getNombreSeriesTF()
-#tiposSeries=getTipoSeriesTF()
-######################################################
 col1, col2 = st.columns(2)
 with col1:
     sDefecto=tiposSeries[:3]
@@ -92,6 +100,9 @@ with col2:
             listaS.extend(seriesSelect)
             datosSelect=datos[listaS]
 
+###################################################################
+# Selección y preprocesado de señales mediante transformada wavelet
+###################################################################
 
 texto2="""
 A continuación se muestra un desplegable para seleccionar las señales a las que se pretende aplicar los algoritmos SVM para clasificación binaria.
@@ -138,6 +149,9 @@ with st.expander("Ver coeficientes de aproximación"+cadena):
 
 st.subheader("Reducción de la dimensionalidad", divider="red")
 
+###################################################################
+# SReducción de la dimensionalidad mediante componentes principales
+###################################################################
 
 datosCP=componentesPrincipales2(datosP)
 if normalizar:
@@ -148,39 +162,8 @@ Para poder visualizar los vectores soporte y el hiperplano de separación es pos
 Para ello se utiliza el **análisis de componentes principales**."""
 st.write(texto3)
 
-texto4=r"""
-La reducción de la dimensionalidad mejora el rendimiento de los algoritmos de aprendizaje automático al transformar el conjunto de datos en otro de menor dimensión, pero que sigue conservando las principales características de los datos originales. El análisis de componentes principales permite identificar patrones en los datos y facilita la visualización de los mismos, puesto que al considerar únicamente las dos primeras componentes, es posible representar las series en el plano euclídeo.
-
-Se parte de un vector $X = (X_{1}, \dots, X_{p})^{t}$ de p dimensiones y se desea pasar a un vector reducido $Z = (X_{1}, \dots ,Z_{r})^{t}$, con $r<p$, obtenido a partir de $X$ y que contenga la máxima información (dispersión) que posee $X$. 
-Se define la **primera componente principal** de $X$ como:
-$$
-Z_{1}=V_{1}^{t}X=V_{11}X_{1}+\dots+V_{p1}X_{p}, \: con \ V_{1}=(V_{11}, \dots, V_{p1})^{t} \:\epsilon \: \mathbb{R}^{p}
-$$ 
-
-tal que $Varianza(Z_{1})=max \left\{ varianza(V^{t}X) \: / V \: \epsilon \: \mathbb{R}^{p}, \: V^{t}V=1 \right\}$
-
-Se puede demostrar que la primera componente principal adopta la forma $Z_{1}=V_{1}^{t}$ siendo $\lambda_{1}$ es el mayor autovalor de $\Sigma=D(X)=E(XX^{t})-(E[X])(E[X])^{t}$ 
-y $V_{1}$ es un autovector de $\Sigma$ asociado a $\lambda_{1}$ de norma la unidad. 
-
-Se definir la **segunda componente principal** de $X$ como una variable aleatoria 
-$$
-Z_{2}=V_{2}^{t}X=V_{12}X_{1}+\dots+V_{p2}X_{p}, \: con \ V_{2}=(V_{12}, \dots, V_{p2})^{t} \:\epsilon \: \mathbb{R}^{p}
-$$
-
-tal que $Varianza(Z_{2})=max \left\{ varianza(V^{t}X) \: / V \: \epsilon \: \mathbb{R}^{p}, \: V^{t}V=1, \; V_{1}^{t}V=0 \right\}$
-
-La segunda componente principal de X adopta la forma $Z_{2} = V_{2}^{t}X$, siendo $\lambda_{2}$ el segundo mayor autovalor de $\Sigma$ y $V_{2}$ un autovalor de $\Sigma$ asociado a
-$\lambda_{2}$ de norma uno. 
-
-Las p componentes principales de X adoptan la forma:
-$$
-Z_{j} = V_{j}^{t}X, \: j\epsilon \left\{1, \dots , p\right\}
-$$
-
-siendo $\lambda_{1} \ge \dots \ge \lambda_{p} \ge 0$, los p autovalores ordenados de $\Sigma$ y $V_{1}, \dots, V_{p}$ sus autovectores asociados y de norma la unidad. 
-"""
 with st.expander("Ver explicación de componentes principales"):
-    st.write(texto4)
+    imprimirTextoComponentesPrincipales()
 
 with st.expander("Ver porcentaje de varianza explicada"):
     componentesPrincipales(datosP)
@@ -190,6 +173,10 @@ if normalizar:
     cadena=' normalizadas'
 with st.expander("Ver primera y segunda componentes principales"+cadena):
     st.write(datosCP)
+
+###################################################################
+# División del conjunto de datos en entrenamiento y test
+###################################################################
 
 st.subheader("Ejemplos para el entrenamiento y para el test", divider="red")
 clases,x,y=etiquetar(datosCP)
@@ -233,6 +220,10 @@ with col2:
 
 st.write("Si considera que el reparto de ejemplos de entrenamiento y test no está equilibrado puede volver a realizar un reparto aleatorio pinchando en el botón de Volver a barajar")
 
+###################################################################
+# Construcción del hiperplano de separación
+###################################################################
+
 st.subheader("Hiperplano de separación", divider="red")
 st.write("Seleccione el parámetro de regularización C y el Kernel para obtener el hiperplano de separación. Para el cálculo de este hiperplano de separación, la función utilizada en la web tiene implementado el método **uno frente a uno**. ")
 col1, col2, col3 = st.columns(3)
@@ -259,6 +250,10 @@ else:
 modelo.fit(xEntrenamiento.values, yEntrenamiento.ravel())
 #modelo.fit(xEntrenamiento.values, yEntrenamiento.ravel())
 dibujarHiperplanoMulti(modelo,c,xEntrenamiento,yEntrenamiento,optionK)
+
+##########################
+# Métricas de evaluación
+##########################
 
 st.subheader("Métricas de evaluación", divider="red")
 st.write("En la siguiente gráfica se muestra la matriz de confusión para los ejemplos reservados para el test y la proporción de datos clasificados correctamente. Un buen resultado se reflejaría en la matriz de confusión con una diagonal (de la parte superior izquierda a la parte inferior derecha) en color azul oscuro y un color muy claro para el resto de celdas. ")

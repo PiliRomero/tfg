@@ -7,11 +7,17 @@ from sklearn.model_selection import train_test_split
 from sklearn.svm import LinearSVC
 from PaginaWeb.funciones.fun import *
 
-
+###################################################################
+# SVM datos cuasi-separables linealmente
+###################################################################
 
 st.title("SVM para clasificación binaria")
 
 st.header("Datos cuasi-separables linealmente")
+
+##############
+# Teoría 
+##############
 
 texto1=r"""
 Cuando el conjunto de datos de partida no es linealmente separable, se introducen las **variables holgura**
@@ -82,6 +88,9 @@ Para determinar el término independiente del hiperplano se consideran los coefi
 """
 st.write(texto2)
 
+###################################################################
+# Selección de datos
+###################################################################
 
 st.subheader("Selección de datos", divider="red")
 ejemplo = st.radio(
@@ -113,19 +122,16 @@ else:
 with st.expander("Ver datos"):
     st.write(datos)
 
-#######################################################
-#datos=getDatosTF()
-#nombreSeries=getNombreSeriesTF()
-#tiposSeries=getTipoSeriesTF()
-######################################################
+
+###################################################################
+# Selección y preprocesado de señales mediante transformada wavelet
+###################################################################
 
 texto2="""
 A continuación se muestra un desplegable para seleccionar las señales a las que se pretende aplicar los algoritmos SVM para clasificación binaria.
 Debe seleccionar dos tipos de series distintas.
 """
 st.write(texto2)
-
-
 
 col1, col2 = st.columns(2)
 with col1:
@@ -199,6 +205,9 @@ if normalizar:
 with st.expander("Ver coeficientes de aproximación"+cadena):
     st.write(datosP)
 
+###########################
+# Componentes principales
+###########################
 
 st.subheader("Reducción de la dimensionalidad", divider="red")
 
@@ -212,40 +221,8 @@ Para poder visualizar los vectores soporte y el hiperplano de separación se pue
 Para ello se utiliza el **análisis de componentes principales**."""
 st.write(texto4)
 
-texto5=r"""
-La reducción de la dimensionalidad mejora el rendimiento de los algoritmos de aprendizaje automático al transformar el conjunto de datos en otro de menor dimensión, pero que sigue conservando las principales características de los datos originales. El análisis de componentes principales permite identificar patrones en los datos y facilita la visualización de los mismos, puesto que al considerar únicamente las dos primeras componentes, es posible representar las series en el plano euclídeo.
-
-Se parte de un vector $X = (X_{1}, \dots, X_{p})^{t}$ de p dimensiones y se desea pasar a un vector reducido $Z = (X_{1}, \dots ,Z_{r})^{t}$, con $r<p$, obtenido a partir de $X$ y que contenga la máxima información (dispersión) que posee $X$. 
-
-Se define la **primera componente principal** de $X$ como:
-$$
-Z_{1}=V_{1}^{t}X=V_{11}X_{1}+\dots+V_{p1}X_{p}, \: con \ V_{1}=(V_{11}, \dots, V_{p1})^{t} \:\epsilon \: \mathbb{R}^{p}
-$$ 
-
-tal que $Varianza(Z_{1})=max \left\{ varianza(V^{t}X) \: / V \: \epsilon \: \mathbb{R}^{p}, \: V^{t}V=1 \right\}$
-
-Se puede demostrar que la primera componente principal adopta la forma $Z_{1}=V_{1}^{t}$ siendo $\lambda_{1}$ es el mayor autovalor de $\Sigma=D(X)=E(XX^{t})-(E[X])(E[X])^{t}$ 
-y $V_{1}$ es un autovector de $\Sigma$ asociado a $\lambda_{1}$ de norma la unidad. 
-
-Se definir la **segunda componente principal** de $X$ como una variable aleatoria 
-$$
-Z_{2}=V_{2}^{t}X=V_{12}X_{1}+\dots+V_{p2}X_{p}, \: con \ V_{2}=(V_{12}, \dots, V_{p2})^{t} \:\epsilon \: \mathbb{R}^{p}
-$$
-
-tal que $Varianza(Z_{2})=max \left\{ varianza(V^{t}X) \: / V \: \epsilon \: \mathbb{R}^{p}, \: V^{t}V=1, \; V_{1}^{t}V=0 \right\}$
-
-La segunda componente principal de X adopta la forma $Z_{2} = V_{2}^{t}X$, siendo $\lambda_{2}$ el segundo mayor autovalor de $\Sigma$ y $V_{2}$ un autovalor de $\Sigma$ asociado a
-$\lambda_{2}$ de norma uno. 
-
-Las p componentes principales de X adoptan la forma:
-$$
-Z_{j} = V_{j}^{t}X, \: j\epsilon \left\{1, \dots , p\right\}
-$$
-
-siendo $\lambda_{1} \ge \dots \ge \lambda_{p} \ge 0$, los p autovalores ordenados de $\Sigma$ y $V_{1}, \dots, V_{p}$ sus autovectores asociados y de norma la unidad. 
-"""
 with st.expander("Ver explicación de componentes principales"):
-    st.write(texto5)
+    imprimirTextoComponentesPrincipales()
 with st.expander("Ver porcentaje de varianza explicada"):
     componentesPrincipales(datosP)
 
@@ -254,6 +231,10 @@ if normalizar:
     cadena=' normalizadas'
 with st.expander("Ver primera y segunda componentes principales"+cadena):
     st.write(datosCP)
+
+###################################################################
+# División de los datos en entrenamiento y test
+###################################################################
 
 st.subheader("Datos para el entrenamiento y para el test", divider="red")
 clases,x,y=etiquetar(datosCP)
@@ -266,8 +247,6 @@ with col1:
 with col2:
     with st.expander("Ver distribución:" + cadena):
         dibujarDist(y,clases)
-
-
 
 
 if "aleatorio" not in st.session_state:
@@ -301,6 +280,10 @@ with col2:
 
 st.write("Si considera que el reparto de datos de entrenamiento y test no está equilibrado puede volver a realizar un reparto aleatorio pinchando en el botón de Volver a barajar")
 
+###################################################################
+# Construcción del hiperplano de separación
+###################################################################
+
 st.subheader("Hiperplano de separación", divider="red")
 st.write("Puede variar el parámetro de regularización C, que controla el equilibrio entre el margen del hiperplano y el número de datos clasificados erroneamente.")
 
@@ -311,6 +294,10 @@ modelo = LinearSVC(C = cSelect)
 modelo.fit(xEntrenamiento.values, yEntrenamiento.ravel())
 
 dibujarHiperplano(modelo,xEntrenamiento,yEntrenamiento,vS)
+
+###################################################################
+# Métricas de evaluación
+###################################################################
 
 st.subheader("Métricas de evaluación", divider="red")
 st.write("A continuación se muestra la proporción de datos clasificados correctamente (del conjunto de datos reservados para el test) y la matriz de confusión, donde en el eje horizontal se muestra la etiqueta que predice el modelo y en el vertical la etiqueta real.")

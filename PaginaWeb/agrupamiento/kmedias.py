@@ -31,7 +31,7 @@ Los pasos que se han de seguir para aplicar este algoritmo se resumen en:
 st.markdown(texto1)
 
 #################################################################################
-# Selección del conjunto de datos (entrenamiento o proporcionados por el usuario)
+# Selección del conjunto de datos (ejemplo o proporcionados por el usuario)
 #################################################################################
 
 st.subheader("Selección de datos", divider="red")
@@ -65,11 +65,7 @@ else:
 with st.expander("Ver datos"):
     st.write(datos)
 
-#######################################################
-#datos=getDatosTF()
-#nombreSeries=getNombreSeriesTF()
-#tiposSeries=getTipoSeriesTF()
-######################################################
+
 
 col1, col2 = st.columns(2)
 with col1:
@@ -105,12 +101,16 @@ with col2:
         listaS.extend(seriesSelect)
         datosSelect=datos[listaS]   
 
-
+###################################################################
+# Selección y preprocesado de señales mediante transformada wavelet
+###################################################################
 
 texto2="""
 A continuación se va a aplicar la técnica de k-Medias para lograr identificar formas de onda completas. Para ello en primer lugar se realiza el **preprocesamiento** de las señales aplicando la transformada de Wavelet. Se fija un nivel de descomposición M común para todas las señales. Cada instancia estará formada por los coeficientes de aproximación para este nivel de descomposición. De este modo se representará cada una de las señales originales por un número de coeficientes que dependerá de la profundidad M. A mayor profundidad la reducción de la dimensionalidad va a ser más significativa, pero el ajuste va a ser peor.
 """
 st.write(texto2)
+
+
 
 st.subheader("Selección de wavelet y nivel de resolución", divider="red")
 
@@ -147,6 +147,10 @@ with st.expander("Ver coeficientes de aproximación"+cadena):
 
 st.subheader("Métrica de evaluación", divider="red")
 
+###################################################################
+# Aplicación del algoritmo de k-media
+###################################################################
+
 texto33="""
 A continuación se pide introducir el número de clústeres para el agrupamiento jerárquico y se dibujan las señales agrupadas en función del clúster al que pertenecen. Además, se calcula el índice de  Davies Bouldin. 
 
@@ -166,12 +170,19 @@ nCSelect=st.slider("Número de clústeres: ", min_value=2,max_value=len(datosP) 
 kmedias=KMeans(n_clusters=nCSelect,init='random')
 clases=kmedias.fit_predict(datosP)
 
+#############################################################
+# Medidas de ajuste y representación gráfica de los clústeres
+#############################################################
+
 dabo=davies_bouldin_score(datosP, clases)
 st.write("Índice de Davies Bouldin: " + str(round(dabo,3)))
 
 dibujarClusters(nCSelect,datosP,clases)
 
-#componentesPrincipales2(datosP)
+##########################
+# Componentes principales
+##########################
+
 datosCP=componentesPrincipales2(datosP)
 if normalizar:
     datosCP=pd.DataFrame(scale(datosCP),index=seriesSelect,columns=['pc1','pc2'])
@@ -183,46 +194,19 @@ Para poder visualizar los clústeres se puede reducir la dimensionalidad de los 
 Para ello se utiliza el **análisis de componentes principales**."""
 st.write(texto6)
 
-texto7=r"""
-La reducción de la dimensionalidad mejora el rendimiento de los algoritmos de aprendizaje automático al transformar el conjunto de datos en otro de menor dimensión, pero que sigue conservando las principales características de los datos originales. El análisis de componentes principales permite identificar patrones en los datos y facilita la visualización de los mismos, puesto que al considerar únicamente las dos primeras componentes, es posible representar las series en el plano euclídeo.
-
-Se parte de un vector $X = (X_{1}, \dots, X_{p})^{t}$ de p dimensiones y se desea pasar a un vector reducido $Z = (X_{1}, \dots ,Z_{r})^{t}$, con $r<p$, obtenido a partir de $X$ y que contenga la máxima información (dispersión) que posee $X$. 
-
-Se define la **primera componente principal** de $X$ como:
-$$
-Z_{1}=V_{1}^{t}X=V_{11}X_{1}+\dots+V_{p1}X_{p}, \: con \ V_{1}=(V_{11}, \dots, V_{p1})^{t} \:\epsilon \: \mathbb{R}^{p}
-$$ 
-
-tal que $Varianza(Z_{1})=max \left\{ varianza(V^{t}X) \: / V \: \epsilon \: \mathbb{R}^{p}, \: V^{t}V=1 \right\}$
-
-Se puede demostrar que la primera componente principal adopta la forma $Z_{1}=V_{1}^{t}$ siendo $\lambda_{1}$ es el mayor autovalor de $\Sigma=D(X)=E(XX^{t})-(E[X])(E[X])^{t}$ 
-y $V_{1}$ es un autovector de $\Sigma$ asociado a $\lambda_{1}$ de norma la unidad. 
-
-Se definir la **segunda componente principal** de $X$ como una variable aleatoria 
-$$
-Z_{2}=V_{2}^{t}X=V_{12}X_{1}+\dots+V_{p2}X_{p}, \: con \ V_{2}=(V_{12}, \dots, V_{p2})^{t} \:\epsilon \: \mathbb{R}^{p}
-$$
-
-tal que $Varianza(Z_{2})=max \left\{ varianza(V^{t}X) \: / V \: \epsilon \: \mathbb{R}^{p}, \: V^{t}V=1, \; V_{1}^{t}V=0 \right\}$
-
-La segunda componente principal de X adopta la forma $Z_{2} = V_{2}^{t}X$, siendo $\lambda_{2}$ el segundo mayor autovalor de $\Sigma$ y $V_{2}$ un autovalor de $\Sigma$ asociado a
-$\lambda_{2}$ de norma uno. 
-
-Las p componentes principales de X adoptan la forma:
-$$
-Z_{j} = V_{j}^{t}X, \: j\epsilon \left\{1, \dots , p\right\}
-$$
-
-siendo $\lambda_{1} \ge \dots \ge \lambda_{p} \ge 0$, los p autovalores ordenados de $\Sigma$ y $V_{1}, \dots, V_{p}$ sus autovectores asociados y de norma la unidad. 
-"""
 with st.expander("Ver explicación de componentes principales"):
-    st.write(texto7)
+    imprimirTextoComponentesPrincipales()
 with st.expander("Ver porcentaje de varianza explicada"):
     componentesPrincipales(datosP)
 dibujarCluster2d(datosCP,clasesCP,nCSelect)
 
 with st.expander("Ver gráfico iterativo"):
     dibujarCluster2d_bis(datosCP,clasesCP,nCSelect)
+
+###################################################################
+# Comparación agrupamiento jerárquico y k-medias
+###################################################################
+
 st.subheader("Comparación con el método de agrupamiento jerárquico", divider="red")
 texto8="""
 Debe tenerse en cuenta que las distintas técnicas de aprendizaje por agrupamiento no tienen que proporcionar la misma partición para el

@@ -1,8 +1,16 @@
 import streamlit as st
+
+###################################################################
+# SVM para clasificación binaria
+###################################################################
+
 st.title("SVM para clasificación binaria")
 
 st.header("Datos separables linealmente")
 
+#########
+# Teoría
+#########
 
 texto1=r"""
 

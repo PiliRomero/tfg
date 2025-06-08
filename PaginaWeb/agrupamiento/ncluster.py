@@ -4,11 +4,19 @@ import math
 from sklearn.cluster import KMeans
 from PaginaWeb.funciones.fun import *
 
+########################################
+# Determinación del número de clústeres
+########################################
+
 st.title("Número de clústeres")
 
 texto1="""
 En esta página se analizan dos métodos que permiten determinar cuál es el número óptimo de clústeres en una agrupamiento:
 """
+#################################
+# Teoría
+#################################
+
 st.markdown(texto1)
 st.header("El método del codo")
 texto2="""
@@ -33,6 +41,10 @@ donde:
 *   $b_{i}$ es la distancia mínima entre la instancia i y el resto de clústeres. Para calcular la distancia entre una instancia y un clúster se calcula la media de las distancias de esta instancia a cada una de los elementos que componen el clúster.
 """
 st.markdown(texto3)
+
+#################################
+# Selección del conjunto de datos
+#################################
 
 st.subheader("Selección de datos", divider="red")
 
@@ -65,11 +77,6 @@ else:
 with st.expander("Ver datos"):
     st.write(datos)
 
-#######################################################
-#datos=getDatosTF()
-#nombreSeries=getNombreSeriesTF()
-#tiposSeries=getTipoSeriesTF()
-######################################################
 
 col1, col2 = st.columns(2)
 with col1:
@@ -105,6 +112,10 @@ with col2:
         listaS.extend(seriesSelect)
         datosSelect=datos[listaS]  
 
+###################################################################
+# Selección y preprocesado de señales mediante transformada wavelet
+###################################################################
+
 st.subheader("Selección de wavelet y nivel de resolución", divider="red")
 col1, col2 = st.columns(2)
 with col1:
@@ -138,6 +149,11 @@ with st.expander("Ver coeficientes de aproximación" + cadena):
     st.write(datosP)
 
 st.divider()
+
+###################################################################
+# Determinar número óptimo de clústeres
+###################################################################
+
 texto4="""
 A continuación se prueba a obtener el número "óptimo" de clústeres para el agrupamiento por k medias aplicanco el método codo y el método Silhouette.
 """

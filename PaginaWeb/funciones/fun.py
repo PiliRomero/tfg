@@ -41,7 +41,10 @@ def getExternos():
 # Preprocesar señales
 ##############################
 
-# Función que dado un data frame de señales, normaliza las señales y las muestrea a un intervalo regular
+# Función que dado un dataframe de señales, normaliza las señales y las muestrea a un intervalo regular
+# @ param   df      dataframe de señales (cada columna es una señal) que se quier normalizar
+# @ param   frec    frecuencia de remuestreo
+# @ return  dataframe con las señales normalizadas  y muestreadas
 def preprocesarSC(df,frec=None):
     df=df.dropna()
     t=df.columns[0]
@@ -66,8 +69,10 @@ def preprocesarSC(df,frec=None):
             dfN[i]=(df[i]-min(df[i]))/(max(df[i])-min(df[i]))
     return dfN
 
-# Función que dado un data frame comprueba si es posible aplicar los algoritmos de clasificación
-# Se establece un mínimo de 5 señales para aplicar estos algoritmos    
+# Función que dado un dataframe comprueba si es posible aplicar los algoritmos de agrupamiento
+# Se establece un mínimo de 5 señales para aplicar estos algoritmos
+# @ param   df  dataframe con las señales de entrada
+# @ return  True si es posible aplicar el algoritmo de agrupamiento, False en otro caso   
 def esPosibleAgrupamiento(df):
     nS=list(df.columns)[1:]
     if len(nS)<5:
@@ -77,6 +82,8 @@ def esPosibleAgrupamiento(df):
         return True
     
 # Función que dato un data frame comprueba si es posible aplicar el algoritmo SVM binaria
+# @ param   df  dataframe con las señales de entrada
+# @ return  True si es posible aplicar el algoritmo de calsificación, False en otro caso
 def esPosibleClasBin(df):
     nS=list(df.columns)[1:]
     for i in nS:
@@ -90,8 +97,11 @@ def esPosibleClasBin(df):
     else:
         return True
 
-# Función que dado el data frame subido por el usuario llama a la función correspondiente para preprocesar las señales (normalicarlas y muestrearlas)
-# En caso de que no se pueda preprocesar (p.ej por tener caracteres no numéricos) devuelve un mensaje de error         
+# Función que dado el dataframe subido por el usuario llama a la función correspondiente para preprocesar las señales (normalicarlas y muestrearlas)
+# En caso de que no se pueda preprocesar (p.ej por tener caracteres no numéricos) devuelve un mensaje de error  
+# @ param   df      dataframe con las señales de entrada
+# @ param   frec    frecuencia de remuestreo     
+# @ return  señales normalizadas y muestreadas  
 def getDatosExternosN(df,frec=None):
     try:
         df=df.dropna()
@@ -108,20 +118,22 @@ def getDatosExternosN(df,frec=None):
 ################################
 # Obtener datos de entrenamiento
 ################################
-
+@st.cache_data
 def getDatosTF():
     return datosTF
-
+@st.cache_data
 def getNombreSeriesTF():
     return nombreSeriesTF
-
+@st.cache_data
 def getTipoSeriesTF():
     return tiposSeriesTF
 
 ################################
 # Generales
 ################################
-# Función que dibuja una señal
+# Método que dibuja una señal
+# @ param   serie   señal que se quiere dibujar. Objeto de la clase Series
+# @ param   ventana booleano que indica si se aplica la función ventana hamming (FFT)
 def dibujarSerie(serie,ventana=False):
     fig1, ax1 = plt.subplots()
     if ventana==True:
@@ -145,6 +157,9 @@ def dibujarSerie(serie,ventana=False):
 #################################
 
 # Función que devuelve la amplitud más grande (en módulo) de la transformada rápida de Fourier
+# @ param   serie   señal de entrada. Objeto de la clase Series
+# @ param   ventana booleano que indica si se aplica la función ventana hamming (FFT)
+# @ return  módulo máximo de la FFT
 def moduloMaximo(serie,ventana=False):
     if ventana==True:
         s=serie.values * np.hamming(len(serie.index))
@@ -153,6 +168,9 @@ def moduloMaximo(serie,ventana=False):
         return max(abs(np.fft.fftshift(np.fft.fft(serie.values))))
 
 # Función que calcula el percentil 99 de la amplitud (en modulo) de la transformada rápida de Fourier
+# @ param   serie   señal de entrada. Objeto de la clase Series
+# @ param   ventana booleano que indica si se aplica la función ventana hamming (FFT)
+# @ return  percentir 99 del módulo de la FFT
 def percentil(serie,ventana=False):
     if ventana==True:
         s=serie.values * np.hamming(len(serie.index))
@@ -160,7 +178,9 @@ def percentil(serie,ventana=False):
     else:
         return np.percentile(abs(np.fft.fftshift(np.fft.fft(serie.values))),99)
 
-# Función que dibuja dos gráficas con la parte real e imaginaria de la transformada rápida de Fourier
+# Método que dibuja dos gráficas con la parte real e imaginaria de la transformada rápida de Fourier
+# @ param   serie   señal de entrada. Objeto de la clase Series
+# @ param   ventana booleano que indica si se aplica la función ventana hamming (FFT)
 def dibujarTransformada(serie,ventana=False):
     if ventana==True:
         s = serie.values * np.hamming(len(serie.index))
@@ -188,7 +208,9 @@ def dibujarTransformada(serie,ventana=False):
     plt.close(fig1)
 
 
-# Función que dibuja la fase y el módulo de la transformada rápida de fourier 
+# Método que dibuja la fase y el módulo de la transformada rápida de fourier 
+# @ param   serie   señal de entrada. Objeto de la clase Series
+# @ param   ventana booleano que indica si se aplica la función ventana hamming (FFT)
 def dibujarTransformadaMF(serie,ventana=False):
     if ventana==True:
         s = serie.values * np.hamming(len(serie.index))
@@ -216,9 +238,11 @@ def dibujarTransformadaMF(serie,ventana=False):
     plt.cla()
     plt.close(fig1)
 
-# Función que dibuja la transformada inversa de Fourier tras anular los coeficentes cuyo módulo está por debajo
+# Método que dibuja la transformada inversa de Fourier tras anular los coeficentes cuyo módulo está por debajo
 # de cierto umbral (módulo). También es posible pasar el número de coeficientes que se desan que sean no nulos
 # En este caso el programa considerará no nulos los de mayor módulo
+# @ param   serie   señal de entrada. Objeto de la clase Series
+# @ param   ventana booleano que indica si se aplica la función ventana hamming (FFT)
 def dibujarSerieInv(serie, modulo=None, numero=None, ventana=False):
     if ventana==True:
         s = serie.values * np.hamming(len(serie.index))
@@ -266,8 +290,10 @@ def dibujarSerieInv(serie, modulo=None, numero=None, ventana=False):
 # Wavelets
 ##########################
 
-# Función que dibuja los coeficientes de aproximación y detalle de la transormada wavelet de un sólo nivel para una señal
+# Método que dibuja los coeficientes de aproximación y detalle de la transormada wavelet de un sólo nivel para una señal
 # y una wavelet madre pasadas como parámetros
+# @ param   serie   señal de entrada. Objeto de la clase Series
+# @ param   w       wavelet madre
 def digujarCoeficientes(serie,w):
     cA,cD = pywt.dwt(serie.values,w)
     paso=2*(serie.index[1]-serie.index[0])
@@ -286,8 +312,11 @@ def digujarCoeficientes(serie,w):
     plt.cla()
     plt.close(fig1)
 
-# Función que dibuja los coeficientes de aproximación de una wavelet dado un nivel de despomposición m y una
+# Método que dibuja los coeficientes de aproximación de una wavelet dado un nivel de despomposición m y una
 # wavelet madre m y la transformada Wavelet inversa una vez despreciados los coeficientes de detalle
+# @ param   serie   señal de entrada. Objeto de la clase Series
+# @ param   w       wavelet madre
+# @ param   m       nivel de descomposición
 def dibujarCAeInv(serie,w,m):
     coeficientes = pywt.wavedec(serie.values,w, level=m)
     for i in range(1, m):
@@ -313,7 +342,8 @@ def dibujarCAeInv(serie,w,m):
     plt.close(fig1)
     return len(coeficientes[0])
 
-# Función que dibuja la gráfica de una wavelet madre discreta pasada como parámetro
+# Método que dibuja la gráfica de una wavelet madre discreta pasada como parámetro
+# @ param   w       wavelet madre
 def dibujarWaveletDiscreta(w):
     [y,x]=pywt.DiscreteContinuousWavelet(w).wavefun()[1:]
     fig1,ax1=plt.subplots()
@@ -323,7 +353,8 @@ def dibujarWaveletDiscreta(w):
     plt.cla()
     plt.close(fig1)
 
-# Función que dibuja la gráfica de una wavelet madre continua pasada como parámetro
+# Método que dibuja la gráfica de una wavelet madre continua pasada como parámetro
+# @ param   w       wavelet madre
 def dibujarWaveletContinua(w):
     if w in ['cmor','shan']:
         w +='1-1'
@@ -338,7 +369,8 @@ def dibujarWaveletContinua(w):
     plt.cla()
     plt.close(fig1)
 
-# Función que dibuja la gráfica de una wavelet madre
+# Método que dibuja la gráfica de una wavelet madre
+# @ param   w       wavelet madre
 def dibujarWavelet(w):
     wavelistD=pywt.wavelist(kind="continuous")
     wavelistC=pywt.wavelist(kind="discrete")
@@ -352,7 +384,10 @@ def dibujarWavelet(w):
 # Medidas de ajuste
 #############################
 
-# Función que calcula y dibuja el ECM y el EAM entre la serie original y la serie suavizada tras aplicarle la transformada wavelet
+# Método que calcula y dibuja el ECM y el EAM entre la serie original y la serie suavizada tras aplicarle la transformada wavelet
+# @ param   serie   señal de entrada. Objeto de la clase Series
+# @ param   w       wavelet madre
+# @ param   nmax    nivel máximo de descomposición
 def dibujarECM(serie,w,nmax):
     ecmF=[]
     ecmW=[]
@@ -428,6 +463,11 @@ def dibujarECM(serie,w,nmax):
 
 # Función que dado un data frame de datos, una lista con el nombre de las series seleccionadas,
 # un nivel de descomposición y una wavelet madre preprocesa las series mediante la transformada Wavelet
+# @ param   datos   dataframe con conjunto de datos con todas las señales
+# @ param   series  nombre de las señales seleccionadas
+# @ param   m       nivel de descomposición
+# @ param   w       wavelet madre
+# @ return  lista donde cada elemento corresponde con una señal preprocesada mediante la transformada wavelet
 def obtenerSeriesPreprocesadas(datos,series,m,w):
     lista=[]
     for s in series:
@@ -441,6 +481,7 @@ def obtenerSeriesPreprocesadas(datos,series,m,w):
     return listaP
 
 # Menu para seleccionar la medida de enlace en el clústering
+# @ return nombre de la medida de enlace seleccionada entre las opciones ward, complete, average y single
 def linkage():
     l=['ward', 'complete', 'average', 'single']
     
@@ -463,6 +504,7 @@ def linkage():
     return option
 
 # Menú para seleccionar la distancia
+# @ return distancia seleccionada entre las opciones: euclidean, manhattan, cosine
 def medida(link): 
     if link=='ward':
         medidas=['euclidean']
@@ -496,7 +538,8 @@ def medida(link):
         st.write(texto)
     return option
 
-# Función para dibujar un dendograma que cambie el color de los clústeres en función de la altura de la línea de corte
+# Método para dibujar un dendograma que cambie el color de los clústeres en función de la altura de la línea de corte
+# @ param   model   modelo de agrupamiento ajustado
 def plot_dendrogram(model, **kwargs):
     counts = np.zeros(model.children_.shape[0])
     n_samples = len(model.labels_)
@@ -514,7 +557,11 @@ def plot_dendrogram(model, **kwargs):
 
     dendrogram(linkage_matrix, **kwargs)
 
-# Función que llama a la encargada de dibujar el dendograma pasándole los parámetros oportunos y dibuja la línea de corte
+# Método que llama a la encargada de dibujar el dendograma pasándole los parámetros oportunos y dibuja la línea de corte
+# @ param   model           modelo de agrupamiento ajustado
+# @ param   alturaCorte     altura de corte del dendograma
+# @ param   enlace          medida de enlace
+# @ param   etiquetas       nombres de las señales
 def dibujarDendograma(modelo,alturaCorte,medida,enlace,etiquetas):
     fig, ax = plt.subplots(1, 1, figsize=(8, 4))
     plot_dendrogram(modelo, color_threshold=alturaCorte, ax=ax, labels=etiquetas, leaf_rotation=90)
@@ -535,8 +582,11 @@ def dibujarDendograma2(modelo,alturaCorte,medida,enlace):
     plt.cla()
     plt.close(fig)
 
-# Función que dibuja las gráficas de las señales (coeficientes de aproximación) agrupadas en función del
+# Método que dibuja las gráficas de las señales (coeficientes de aproximación) agrupadas en función del
 # clúster al que pertenezca
+# @ param   ncluster    número de clústeres
+# @ param   datos       dataframe con las señales preprocesadas a dibujar
+# @ param   clases      array conel grupo al que pertenece cada señal    
 def dibujarClusters(nCluster,datos,clases):
     filas=nCluster//2+nCluster%2    
     col1, col2 = st.columns(2)
@@ -559,8 +609,9 @@ def dibujarClusters(nCluster,datos,clases):
             plt.cla()
             plt.close(fig1)      
 
-# Función que dibuja un gráfico de barras con el porcentaje de variabilidad explicada por cada componente principal
+# Método que dibuja un gráfico de barras con el porcentaje de variabilidad explicada por cada componente principal
 # y calcula el procentaje de variabilidad explicada por las dos primeras componentes principales
+# @ param   datos   dataframe con el conjunto de señales preprocesadas
 def componentesPrincipales(datos):
     pca=PCA() 
     datosPCA=pca.fit_transform(datos)
@@ -579,6 +630,7 @@ def componentesPrincipales(datos):
     plt.close(fig1)
 
 # Función que representa en el plano un conjunto de datos tras reducir la dimensionalidad aplicando componentes principales
+# @ param   datos   dataframe con el conjunto de señales preprocesadas
 def componentesPrincipales2(datos):
     pca=PCA() 
     datosPCA=pca.fit_transform(datos)
@@ -593,6 +645,9 @@ def componentesPrincipales2(datos):
     return datosCP
 
 # Función que dibuja en el plano una nube de puntos donde el color varía en función del clúster al que tertenece
+# @ param   datos       dataframe con el conjunto de señales preprocesadas
+# @ param   clases      array con los grupos a que pertenece cada señal del conjunto de datos
+# @ param   nCluster    número de clústeres
 def dibujarCluster2d(datos,clases,nCluster):
     fig, ax = plt.subplots(figsize=(8, 6))
     for k in range(nCluster):
@@ -608,6 +663,9 @@ def dibujarCluster2d(datos,clases,nCluster):
 
 # Función que dibuja en el plano una nube de puntos donde el color varía en función del clúster al que tertenece
 # En este caso el gráfico es iterativo
+# @ param   datos       dataframe con el conjunto de señales preprocesadas
+# @ param   clases      array con los grupos a que pertenece cada señal del conjunto de datos
+# @ param   nCluster    número de clústeres
 def dibujarCluster2d_bis(datos,clases,nCluster):
     aux=datos.copy()
     aux['clases']=clases
@@ -618,6 +676,7 @@ def dibujarCluster2d_bis(datos,clases,nCluster):
     st.plotly_chart(fig,on_select="rerun")
 
 # Función que dibuja un gráfico para poder determinar el número de clústeres óptimo mediante el método del codo
+# @ param   datos   dataframe con el conjunto de señales preprocesadas
 def metodoCodo(datos):
     ssd=[]
     for i in range(12):
@@ -634,6 +693,7 @@ def metodoCodo(datos):
     plt.close(fig)
 
 # Función que devuelve el número óptimo de clústeres aplicando el método silhouette
+# @ param   datos       dataframe con el conjunto de señales preprocesadas
 def optimoSilhouette(datos):
     coef=[]
     for k in range(2,len(datos)):
@@ -649,6 +709,9 @@ def optimoSilhouette(datos):
 ###############################
 
 # Función que etiqueta el conjunto de señales
+# @ param   datos       dataframe con el conjunto de señales preprocesadas
+# @ retun   clases      nombre de las distintas clases de señales
+# @ return  y           etiquetas numeradas 0, 1, 2, ....           
 def etiquetar(datos):
     etiquetas=list(map(lambda x: x[0:x.find('_')],datos.index))
     clases=list(np.unique_values(etiquetas))
@@ -662,6 +725,8 @@ def etiquetar(datos):
     return clases,x,y
 
 # Función que dibuja el gráfico de sectores con la sitribución del número de señales de cada clase
+# @ param   y       código numérico de la clase
+# @ param   clases  lista de clases
 def dibujarDist(y,clases):
     fig, ax = plt.subplots()
     valores=[]
@@ -674,7 +739,11 @@ def dibujarDist(y,clases):
     plt.cla()
     plt.close(fig)
 
-# Función que dibuja un hiperplano de separación para datos cuasi separables linealmente
+# Método que dibuja un hiperplano de separación para datos (bidimensionales) cuasi separables linealmente
+# @ param   modelo  modelo SVM lineal ajustado   
+# @ param   xE      datos de entrenammiento
+# @ param   yE      etiquetas numéricas de las clases a las que pertenecen los datos de entrenamiento
+# @ param   vS      True o False indicar si se señalan o no los vectores soporte
 def dibujarHiperplano(modelo,xE,yE,vS=False):
     xx = np.linspace(np.min(xE.iloc[:,0]), np.max(xE.iloc[:,0]), 50)
     yy = np.linspace(np.min(xE.iloc[:,1]), np.max(xE.iloc[:,1]), 50)
@@ -707,7 +776,11 @@ def dibujarHiperplano(modelo,xE,yE,vS=False):
     plt.cla()
     plt.close(fig)
 
-# Función que dibuja la matriz de confusión
+# Método que dibuja la matriz de confusión
+# @ param   modelo  modelo ajustado   
+# @ param   clases  lista con las clases distintas de los ejemplos de entrenamiento
+# @ param   xT      datos para el test
+# @ param   yT      etiqueta real de los datos para el test
 def matrizConfusion3(modelo,clases,xT,yT):
     predicciones=modelo.predict(xT.values)
     cm=confusion_matrix(yT,predicciones,labels=modelo.classes_)
@@ -718,7 +791,12 @@ def matrizConfusion3(modelo,clases,xT,yT):
     st.write("**Accuracy**: "+str(round(accuracy_score(yT,predicciones),3)))
     st.plotly_chart(fig,on_select="rerun")
 
-# Función que dibuja un hiperplano de separación para datos no separables linealmente
+# Método que dibuja un hiperplano de separación para datos no separables linealmente
+# @ param   modelo  modelo SVM  ajustado   
+# @ param   xE      datos de entrenammiento
+# @ param   yE      etiquetas numéricas de las clases a las que pertenecen los datos de entrenamiento
+# @ param   ker     función kernel para la SVM danos no separables linealmente
+# @ param   vS      True o False indicar si se señalan o no los vectores soporte
 def dibujarHiperplanoNL(modelo,clases,xE,yE,ker,vS=False):
     xx = np.linspace(np.min(xE.iloc[:,0]), np.max(xE.iloc[:,0]), 50)
     yy = np.linspace(np.min(xE.iloc[:,1]), np.max(xE.iloc[:,1]), 50)
@@ -739,6 +817,10 @@ def dibujarHiperplanoNL(modelo,clases,xE,yE,ker,vS=False):
     plt.close(fig)
 
 # Función que dibuja un hiperplano de separación multinomial 
+# @ param   modelo  modelo SVM  ajustado   
+# @ param   xE      datos de entrenammiento
+# @ param   yE      etiquetas numéricas de las clases a las que pertenecen los datos de entrenamiento
+# @ param   ker     función kernel para la SVM danos no separables linealmente
 def dibujarHiperplanoMulti(modelo,clases,xE,yE,ker):
     xx = np.linspace(np.min(xE.iloc[:,0]), np.max(xE.iloc[:,0]), 50)
     yy = np.linspace(np.min(xE.iloc[:,1]), np.max(xE.iloc[:,1]), 50)
@@ -753,3 +835,39 @@ def dibujarHiperplanoMulti(modelo,clases,xE,yE,ker):
     st.pyplot(fig)
     plt.cla()
     plt.close(fig)
+
+# Método para imprimir la teoría de componentes principales
+def imprimirTextoComponentesPrincipales():
+    texto=r"""
+    La reducción de la dimensionalidad mejora el rendimiento de los algoritmos de aprendizaje automático al transformar el conjunto de datos en otro de menor dimensión, pero que sigue conservando las principales características de los datos originales. El análisis de componentes principales permite identificar patrones en los datos y facilita la visualización de los mismos, puesto que al considerar únicamente las dos primeras componentes, es posible representar las series en el plano euclídeo.
+
+    Se parte de un vector $X = (X_{1}, \dots, X_{p})^{t}$ de p dimensiones y se desea pasar a un vector reducido $Z = (X_{1}, \dots ,Z_{r})^{t}$, con $r<p$, obtenido a partir de $X$ y que contenga la máxima información (dispersión) que posee $X$. 
+
+    Se define la **primera componente principal** de $X$ como:
+    $$
+    Z_{1}=V_{1}^{t}X=V_{11}X_{1}+\dots+V_{p1}X_{p}, \: con \ V_{1}=(V_{11}, \dots, V_{p1})^{t} \:\epsilon \: \mathbb{R}^{p}
+    $$ 
+
+    tal que $Varianza(Z_{1})=max \left\{ varianza(V^{t}X) \: / V \: \epsilon \: \mathbb{R}^{p}, \: V^{t}V=1 \right\}$
+
+    Se puede demostrar que la primera componente principal adopta la forma $Z_{1}=V_{1}^{t}$ siendo $\lambda_{1}$ es el mayor autovalor de $\Sigma=D(X)=E(XX^{t})-(E[X])(E[X])^{t}$ 
+    y $V_{1}$ es un autovector de $\Sigma$ asociado a $\lambda_{1}$ de norma la unidad. 
+
+    Se definir la **segunda componente principal** de $X$ como una variable aleatoria 
+    $$
+    Z_{2}=V_{2}^{t}X=V_{12}X_{1}+\dots+V_{p2}X_{p}, \: con \ V_{2}=(V_{12}, \dots, V_{p2})^{t} \:\epsilon \: \mathbb{R}^{p}
+    $$
+
+    tal que $Varianza(Z_{2})=max \left\{ varianza(V^{t}X) \: / V \: \epsilon \: \mathbb{R}^{p}, \: V^{t}V=1, \; V_{1}^{t}V=0 \right\}$
+
+    La segunda componente principal de X adopta la forma $Z_{2} = V_{2}^{t}X$, siendo $\lambda_{2}$ el segundo mayor autovalor de $\Sigma$ y $V_{2}$ un autovalor de $\Sigma$ asociado a
+    $\lambda_{2}$ de norma uno. 
+
+    Las p componentes principales de X adoptan la forma:
+    $$
+    Z_{j} = V_{j}^{t}X, \: j\epsilon \left\{1, \dots , p\right\}
+    $$
+
+    siendo $\lambda_{1} \ge \dots \ge \lambda_{p} \ge 0$, los p autovalores ordenados de $\Sigma$ y $V_{1}, \dots, V_{p}$ sus autovectores asociados y de norma la unidad. 
+    """
+    st.write(texto)
