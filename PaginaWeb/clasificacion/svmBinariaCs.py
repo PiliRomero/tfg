@@ -145,7 +145,8 @@ with col1:
     seriesSelect=[]
     for ts in optionTs:
         for ns in nombreSeries:
-            if ts in ns:
+#           if ts in ns:
+            if ts==ns[0:ns.find('_')]:
                 seriesSelect.append(ns)
 
 listaS=['t']
@@ -161,8 +162,9 @@ with col2:
         seriesSelect=[]
         for ts in tiposSeries[:2]:
             for ns in nombreSeries:
-                if ts in ns:
-                    seriesSelect.append(ns)
+#           if ts in ns:
+                if ts==ns[0:ns.find('_')]:
+                        seriesSelect.append(ns)
         listaS=['t']
         listaS.extend(seriesSelect)
         datosSelect=datos[listaS]

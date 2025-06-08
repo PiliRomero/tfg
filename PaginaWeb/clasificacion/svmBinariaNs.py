@@ -151,7 +151,8 @@ with col1:
     seriesSelect=[]
     for ts in optionTs:
         for ns in nombreSeries:
-            if ts in ns:
+#            if ts in ns:
+            if ts==ns[0:ns.find('_')]:
                 seriesSelect.append(ns)
 
 listaS=['t']
@@ -167,7 +168,8 @@ with col2:
         seriesSelect=[]
         for ts in tiposSeries[:2]:
             for ns in nombreSeries:
-                if ts in ns:
+#           if ts in ns:
+                if ts==ns[0:ns.find('_')]:
                     seriesSelect.append(ns)
         listaS=['t']
         listaS.extend(seriesSelect)
@@ -359,20 +361,20 @@ with col1:
     modelo1=SVC(C=cSelect2,kernel='rbf')
     modelo1.fit(xEntrenamiento2.values, yEntrenamiento2.ravel())
     st.write("**Kernel Gaussiano**")
-    matrizConfusion3(modelo1,clases2,xTest2,yTest2)
+    matrizConfusion3(modelo1,clases2,xTest2,yTest2,uk="rbf")
 
     modelo2=SVC(C=cSelect2,kernel='poly',degree=gSelect2,coef0=c0Select2)
     modelo2.fit(xEntrenamiento2.values, yEntrenamiento2.ravel())
     st.write("**Kernel polinomial de orden**" + str(gSelect2))
-    matrizConfusion3(modelo2,clases2,xTest2,yTest2)    
+    matrizConfusion3(modelo2,clases2,xTest2,yTest2,uk="poly")    
 
 with col2:
     modelo3=SVC(C=cSelect2,kernel='linear')
     modelo3.fit(xEntrenamiento2.values, yEntrenamiento2.ravel())
     st.write("**Kernel Gaussiano**")
-    matrizConfusion3(modelo3,clases2,xTest2,yTest2)
+    matrizConfusion3(modelo3,clases2,xTest2,yTest2,uk="linear")
 
     modelo4=SVC(C=cSelect2,kernel='sigmoid',coef0=c0Select2)
     modelo4.fit(xEntrenamiento2.values, yEntrenamiento2.ravel())
     st.write("**Kernel sigmoidal**")
-    matrizConfusion3(modelo4,clases2,xTest2,yTest2)     
+    matrizConfusion3(modelo4,clases2,xTest2,yTest2,uk="sigmoid")     

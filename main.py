@@ -19,7 +19,7 @@ pages = {
         st.Page("PaginaWeb/agrupamiento/ncluster.py", title="Número de clústeres")
 
     ],
-    "MÁQUINAS DE VECTOR SOPORTE" : [
+    "APRENDIZAJE DE CLASIFICACIÓN" : [
         st.Page("PaginaWeb/clasificacion/clasificacion.py",title="Máquinas de vectores soporte (SVM)"),
         st.Page("PaginaWeb/clasificacion/svmBinaria.py",title="Datos separables linealmente"),
         st.Page("PaginaWeb/clasificacion/svmBinariaCs.py",title="Datos cuasi-separables linealmente"),

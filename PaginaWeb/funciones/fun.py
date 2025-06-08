@@ -28,6 +28,9 @@ nombreSeriesTF=list(datosTF.columns)[1:]
 # Se obtiene el tipo de series
 tiposSeriesTF=np.unique(list(map(lambda x: x[0:x.find('_')],nombreSeriesTF)))
 
+def imprimirtiposSeriesTF():
+    st.write(tiposSeriesTF)
+
 if "datosExternos" not in st.session_state:
     st.session_state.datosExternos = None
 
@@ -37,6 +40,18 @@ def setDatosExternos(df):
 def getExternos():
     return st.session_state.datosExternos
 
+
+def encontrarDuplicados():
+    duplicate_columns = []
+    column_names = datosTF.columns.to_list()
+    for i in range(len(column_names)):
+        for j in range(i + 1, len(column_names)):
+            if datosTF[column_names[i]].equals(datosTF[column_names[j]]):
+                duplicate_columns.append(column_names[j])
+    st.write("Columnas duplicadas:")
+    st.write(duplicate_columns)
+
+    
 ##############################
 # Preprocesar señales
 ##############################
@@ -781,7 +796,7 @@ def dibujarHiperplano(modelo,xE,yE,vS=False):
 # @ param   clases  lista con las clases distintas de los ejemplos de entrenamiento
 # @ param   xT      datos para el test
 # @ param   yT      etiqueta real de los datos para el test
-def matrizConfusion3(modelo,clases,xT,yT):
+def matrizConfusion3(modelo,clases,xT,yT,uk=None):
     predicciones=modelo.predict(xT.values)
     cm=confusion_matrix(yT,predicciones,labels=modelo.classes_)
     #st.write(cm)
@@ -789,7 +804,10 @@ def matrizConfusion3(modelo,clases,xT,yT):
     fig=px.imshow(df,labels=dict(x="Predicted label",y="True label"))
     fig.update_layout(dict(title=dict(text="Matriz de confusión")))
     st.write("**Accuracy**: "+str(round(accuracy_score(yT,predicciones),3)))
-    st.plotly_chart(fig,on_select="rerun")
+    if uk==None:
+        st.plotly_chart(fig,on_select="rerun")
+    else:
+        st.plotly_chart(fig,key=uk,on_select="rerun")
 
 # Método que dibuja un hiperplano de separación para datos no separables linealmente
 # @ param   modelo  modelo SVM  ajustado   

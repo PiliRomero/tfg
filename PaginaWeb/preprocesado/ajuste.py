@@ -84,7 +84,7 @@ with col1:
         index=1       
     )
 
-    ls=[ns for ns in nombreSeries if optionTs in ns]
+    ls=[ns for ns in nombreSeries if optionTs==ns[0:ns.find('_')]]
 
     optionS=st.selectbox(
         "Seleccione una señal",
