@@ -133,13 +133,13 @@ def getDatosExternosN(df,frec=None):
 ################################
 # Obtener datos de entrenamiento
 ################################
-@st.cache_data
+#@st.cache_data
 def getDatosTF():
     return datosTF
-@st.cache_data
+#@st.cache_data
 def getNombreSeriesTF():
     return nombreSeriesTF
-@st.cache_data
+#@st.cache_data
 def getTipoSeriesTF():
     return tiposSeriesTF
 
