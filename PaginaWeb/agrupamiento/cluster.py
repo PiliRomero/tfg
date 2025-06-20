@@ -149,7 +149,7 @@ with col1:
     )
     normalizar=st.checkbox("Normalizar coeficientes aproximación")
 with col2:
-    mSelect=st.slider("Nivel de resolución: ", min_value=1,max_value=math.trunc(math.log2(len(datosSelect)))-1 ,value=math.trunc(math.log2(len(datosSelect))/2))
+    mSelect=st.slider("Nivel de descomposición: ", min_value=1,max_value=math.trunc(math.log2(len(datosSelect)))-1 ,value=math.trunc(math.log2(len(datosSelect))/2))
 
     seriesP=obtenerSeriesPreprocesadas(datosSelect,seriesSelect,mSelect,optionW)
     datosP=pd.DataFrame(seriesP,index=seriesSelect,columns=["c"+str(indice) for indice in np.arange(len(seriesP[0]))+1])
